@@ -33,6 +33,7 @@ CSRF_TRUSTED_ORIGINS = ['https://api.nevesjr.com']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://api.nevesjr.com",
 ]
 
 # Application definition
@@ -77,7 +78,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'nevesjr_api.urls'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOW_CREDENTIALS = True
 
 TEMPLATES = [
     {
