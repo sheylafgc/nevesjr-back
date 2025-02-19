@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['api.nevesjr.com']
 CSRF_TRUSTED_ORIGINS = ['https://api.nevesjr.com']
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
     "https://api.nevesjr.com",
     "https://nevesjr.vercel.app",
 ]
@@ -79,9 +78,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'nevesjr_api.urls'
 
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
