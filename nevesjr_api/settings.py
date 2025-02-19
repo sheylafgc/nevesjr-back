@@ -34,6 +34,7 @@ CSRF_TRUSTED_ORIGINS = ['https://api.nevesjr.com']
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://api.nevesjr.com",
+    "https://nevesjr.vercel.app",
 ]
 
 # Application definition
