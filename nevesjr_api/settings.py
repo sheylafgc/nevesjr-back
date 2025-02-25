@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import os
+import pymysql
+
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +30,7 @@ SECRET_KEY = 'django-insecure-5dl-s3@&0-1wr49*0sy-ss&_(k$$%@)gm*4&$a5bxa4_*54&r4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['api.nevesjr.com']
+ALLOWED_HOSTS = ['api.nevesjr.com', '*']
 
 CSRF_TRUSTED_ORIGINS = ['https://api.nevesjr.com']
 
