@@ -89,3 +89,17 @@ class BlogDeleteAPIView(APIView):
         blog = Blog.objects.get(pk=pk)
         blog.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class BlogCategoryListAPIView(APIView):
+    @swagger_auto_schema(
+        operation_description="Lista todos os blogs por categoria",
+    )
+    def get(self, request, category):
+        blogs = Blog.objects.filter(category=category)
+        
+        if not blogs:
+            return Response({"detail": "Categoria não encontrada."}, status=status.HTTP_404_NOT_FOUND)
+   
+        serializer = BlogSerializer(blogs, many=True)
+        
+        return Response(serializer.data)
