@@ -10,5 +10,5 @@ urlpatterns = [
     path('blog/create', BlogCreateAPIView.as_view(), name='blog-create'),
     path('blog/update/<int:pk>', BlogUpdateAPIView.as_view(), name='blog-update'),
     path('blog/delete/<int:pk>', BlogDeleteAPIView.as_view(), name='blog-delete'),
-    path('blog/categorie/<str:category>/', BlogCategoryListAPIView.as_view(), name='category-list'),
+    path('blog/categorie/<str:category>', BlogCategoryListAPIView.as_view(), name='category-list'),
 ]
