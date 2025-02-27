@@ -4,13 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 from .managers import CustomUserManager
 
-# from bookings.choices import TITLE_CHOICES
-
-TITLE_CHOICES = [
-    ("Mr", "Mr"),
-    ("Ms", "Ms"),
-] # Tirar depois que colocar a app bookings
-
+from bookings.choices import TITLE_CHOICES
 
 class User(AbstractUser):
     username = None

@@ -1,3 +1,5 @@
+import re
+import unicodedata
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -94,12 +96,22 @@ class BlogCategoryListAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Lista todos os blogs por categoria",
     )
-    def get(self, request, category):
-        blogs = Blog.objects.filter(category=category)
-        
-        if not blogs:
-            return Response({"detail": "Categoria não encontrada."}, status=status.HTTP_404_NOT_FOUND)
-   
-        serializer = BlogSerializer(blogs, many=True)
-        
-        return Response(serializer.data)
+    def get(self, request):
+        categories = (
+            Blog.objects.exclude(category__isnull=True)
+            .exclude(category="")
+            .values_list("category", flat=True)
+            .distinct()
+        )
+
+        def clean_value(category):
+            category = "".join(
+                c for c in unicodedata.normalize("NFD", category) if unicodedata.category(c) != "Mn"
+            )
+
+            category = re.sub(r"[^a-zA-Z0-9]", "", category)
+            return category.lower()
+
+        formatted_categories = [{"label": category, "value": clean_value(category)} for category in categories]
+
+        return Response(formatted_categories, status=status.HTTP_200_OK)
