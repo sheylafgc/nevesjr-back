@@ -39,6 +39,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://nevesjr.vercel.app",
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -66,6 +68,8 @@ INSTALLED_APPS += [
     'be_partner',
     'frequently_questions',
     'feedback',
+    'payment',
+    'bookings',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +84,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'nevesjr_api.urls'
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
@@ -181,3 +183,6 @@ SIMPLE_JWT = {
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
 }
+
+STRIPE_SECRET_KEY = 'sk_test_51QuK82FgOV4SNGh7kbttnhKSP8b2I0QqDXwivvXoHmsuJwKgNvtv2QL84LWhCNhFzgw9DkJoA3oI9F2RAnn1UJ3A00r8PonXsu'
+STRIPE_WEBHOOK_SECRET = "whsec_d36ffe525cccddeb15235e4fe36b6d980818f71528637cd562129b101425b23a"
