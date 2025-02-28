@@ -9,7 +9,7 @@ from .choices import *
 class Booking(models.Model):
     from_route = models.CharField(max_length=255, blank=True, null=True)
     to_route = models.CharField(max_length=255, blank=True, null=True)
-    date = models.DateField(blank=True, null=True)
+    date = models.DateTimeField(blank=True, null=True)
     hour = models.TimeField(blank=True, null=True)
     duration = models.DurationField(blank=True, null=True)
     estimated_time = models.TimeField(blank=True, null=True)
