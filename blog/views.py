@@ -94,7 +94,7 @@ class BlogDeleteAPIView(APIView):
     
 class BlogCategoryListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Lista todos os blogs por categoria",
+        operation_description="Lista todas as categorias do blog",
     )
     def get(self, request):
         categories = (
@@ -115,3 +115,13 @@ class BlogCategoryListAPIView(APIView):
         formatted_categories = [{"label": category, "value": clean_value(category)} for category in categories]
 
         return Response(formatted_categories, status=status.HTTP_200_OK)
+    
+class BlogByCategoryAPIView(APIView):
+    @swagger_auto_schema(
+        operation_description="Lista os post blogs por categoria",
+    )
+    def get(self, request, category):
+        blogs = Blog.objects.filter(category=category)
+        
+        serializer = BlogSerializer(blogs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -9,6 +9,8 @@ from .models import User
 from drf_yasg.utils import swagger_auto_schema
 
 class UserListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_description="Retorna todos os usuários"
     )
@@ -18,6 +20,8 @@ class UserListAPIView(APIView):
         return Response(serializer.data)
     
 class UserCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         request_body=UserSerializer,
         operation_description="Cria um usuário",
@@ -33,6 +37,8 @@ class UserCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UserDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_description="Retorna um usuário"
     )
@@ -42,6 +48,8 @@ class UserDetailAPIView(APIView):
         return Response(serializer.data)
     
 class UserUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         request_body=UserSerializer, 
         operation_description="Atualiza um usuário",
@@ -62,6 +70,8 @@ class UserUpdateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDeleteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_description="Deleta um usuário"
     )

@@ -9,4 +9,7 @@ urlpatterns = [
     path('booking/create/', BookingCreateAPIView.as_view(), name='booking-create'),
     path('booking/update/', BookingUpdateAPIView.as_view(), name='booking-update'),
     path('booking/delete/', BookingDeleteAPIView.as_view(), name='booking-delete'),
+    path('booking/cancel/<int:booking_id>/', BookingCancelAPIView.as_view(), name='booking-cancel'),
+    path('booking/user/<int:user_id>/', BookingByUserAPIView.as_view(), name='bookings-by-user'),
+    path('booking/canceled/user/<int:user_id>/', CanceledBookingsAPIView.as_view(), name='canceled-bookings-by-user'),
 ]
