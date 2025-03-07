@@ -3,6 +3,7 @@ import time
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 import stripe
 
@@ -14,6 +15,8 @@ from drf_yasg.utils import swagger_auto_schema
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PaymentReceiptView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_description="Passando o id do pagamento retorna o comprovante do pagamento"
     )
