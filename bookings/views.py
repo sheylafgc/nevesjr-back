@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
+from django.utils.timezone import now
+
 from django.shortcuts import get_object_or_404
 
 from .models import Booking
@@ -203,7 +205,7 @@ class BookingByUserAPIView(APIView):
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class CanceledBookingsAPIView(APIView):
+class BookingCanceledByUseAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -213,3 +215,43 @@ class CanceledBookingsAPIView(APIView):
         bookings = Booking.objects.filter(user_id=user_id, payment_status='canceled')
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class BookingFutureByUserAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description="Lista as reservas futuras de um determinado usuário"
+    )
+    def get(self, request, user_id):
+        current_datetime = now()
+        future_bookings = Booking.objects.filter(
+            user_id=user_id
+        ).exclude(payment_status="canceled").filter(
+            date__gt=current_datetime
+        ) | Booking.objects.filter(
+            user_id=user_id
+        ).exclude(payment_status="canceled").filter(
+            date=current_datetime, hour__gt=current_datetime.time()
+        )
+        serializer = BookingSerializer(future_bookings, many=True)
+        return Response(serializer.data)
+    
+class BookingPastByUserAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description="Lista as reservas passadas de um determinado usuário"
+    )
+    def get(self, request, user_id):
+        current_datetime = now()
+        past_bookings = Booking.objects.filter(
+            user_id=user_id
+        ).exclude(payment_status="canceled").filter(
+            date__lt=current_datetime
+        ) | Booking.objects.filter(
+            user_id=user_id
+        ).exclude(payment_status="canceled").filter(
+            date=current_datetime, hour__lt=current_datetime.time()
+        )
+        serializer = BookingSerializer(past_bookings, many=True)
+        return Response(serializer.data)

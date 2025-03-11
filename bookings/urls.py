@@ -11,5 +11,7 @@ urlpatterns = [
     path('booking/delete/<int:pk>/', BookingDeleteAPIView.as_view(), name='booking-delete'),
     path('booking/cancel/<int:booking_id>/', BookingCancelAPIView.as_view(), name='booking-cancel'),
     path('booking/user/<int:user_id>/', BookingByUserAPIView.as_view(), name='bookings-by-user'),
-    path('booking/canceled/user/<int:user_id>/', CanceledBookingsAPIView.as_view(), name='canceled-bookings-by-user'),
+    path('booking/canceled/user/<int:user_id>/', BookingCanceledByUseAPIView.as_view(), name='canceled-bookings-by-user'),
+    path('booking/future/user/<int:user_id>/', BookingFutureByUserAPIView.as_view(), name='canceled-bookings-by-user'),
+    path('booking/past/user/<int:user_id>/', BookingPastByUserAPIView.as_view(), name='canceled-bookings-by-user'),
 ]
