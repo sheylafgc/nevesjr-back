@@ -4,7 +4,7 @@ from vehicles.serializers import VehicleSerializer
 from .models import Booking
 
 class BookingSerializer(serializers.ModelSerializer):
-    vehicle = serializers.SerializerMethodField()
+    vehicle_details = serializers.SerializerMethodField()
     
     class Meta:
         model = Booking
@@ -23,10 +23,9 @@ class BookingSerializer(serializers.ModelSerializer):
 
         return super().to_internal_value(data)
     
-    def get_vehicle(self, obj):
+    def get_vehicle_details(self, obj):
         if obj.vehicle:
             return {
-                "id": obj.vehicle.id,
                 "car_name": obj.vehicle.car_name,
                 "car_type": obj.vehicle.car_type,
                 "car_image": obj.vehicle.car_image.url if obj.vehicle.car_image else None
