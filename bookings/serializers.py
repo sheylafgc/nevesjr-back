@@ -1,7 +1,11 @@
 from rest_framework import serializers
+
+from vehicles.serializers import VehicleSerializer
 from .models import Booking
 
 class BookingSerializer(serializers.ModelSerializer):
+    vehicle = serializers.SerializerMethodField()
+    
     class Meta:
         model = Booking
         fields = '__all__'
@@ -18,3 +22,13 @@ class BookingSerializer(serializers.ModelSerializer):
             data['title'] = user.title
 
         return super().to_internal_value(data)
+    
+    def get_vehicle(self, obj):
+        if obj.vehicle:
+            return {
+                "id": obj.vehicle.id,
+                "car_name": obj.vehicle.car_name,
+                "car_type": obj.vehicle.car_type,
+                "car_image": obj.vehicle.car_image.url if obj.vehicle.car_image else None
+            }
+        return None
