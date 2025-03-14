@@ -52,6 +52,7 @@ urlpatterns = [
     path('api/', include('feedback.urls', namespace="feedback")),
     path('api/', include('payment.urls', namespace="payment")),
     path('api/', include('bookings.urls', namespace="bookings")),
+    path('api/', include("forgot_password.urls", namespace="forgot-password")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path("stripe/webhook/", stripe_webhook, name="stripe-webhook"),
 ]

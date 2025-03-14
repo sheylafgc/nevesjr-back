@@ -75,7 +75,7 @@ class BookingCreateAPIView(APIView):
             email = user.email
 
             if not email:
-                return Response({'error': 'Usuário não possui um e-mail cadastrado'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'User does not have a registered e-mail address.'}, status=status.HTTP_400_BAD_REQUEST)
 
             vehicle = validated_data.get('vehicle')
             distance_km = validated_data.get('distance_km')
@@ -84,12 +84,12 @@ class BookingCreateAPIView(APIView):
 
             if to_route and duration:
                 return Response(
-                    {'error': "Se 'to_route' está presente, 'duration' não pode ser fornecido."},
+                    {'error': "If ‘to_route’ is present, ‘duration’ cannot be supplied."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             if not to_route and distance_km:
                 return Response(
-                    {'error': "Se 'to_route' não está presente, 'distance_km' não pode ser fornecido."},
+                    {'error': "If ‘to_route’ is not present, ‘distance_km’ cannot be supplied."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -165,7 +165,7 @@ class BookingDeleteAPIView(APIView):
     def delete(self, request, pk):
         booking = get_object_or_404(Booking, pk=pk)
         booking.delete()
-        return Response({"message": "Booking deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Booking successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
     
 class BookingCancelAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -177,7 +177,7 @@ class BookingCancelAPIView(APIView):
         booking = get_object_or_404(Booking, id=booking_id)
 
         if booking.payment_status != 'approved':
-            return Response({'error': 'Booking não pode ser cancelado, pois o pagamento não foi aprovado.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Booking cannot be cancelled because payment has not been approved.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refund = stripe.Refund.create(
@@ -187,7 +187,7 @@ class BookingCancelAPIView(APIView):
             booking.payment_status = 'canceled'
             booking.save()
 
-            return Response({'status': 'Booking cancelado e reembolso realizado com sucesso.'}, status=status.HTTP_200_OK)
+            return Response({'status': 'Booking cancelled and refund successful.'}, status=status.HTTP_200_OK)
 
         except stripe.error.StripeError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
