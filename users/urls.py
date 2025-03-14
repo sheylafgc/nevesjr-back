@@ -11,4 +11,5 @@ urlpatterns = [
     path('user/update/<int:pk>', UserUpdateAPIView.as_view(), name='user-update'),
     path('user/delete/<int:pk>', UserDeleteAPIView.as_view(), name='user-delete'),
     path('user/profile', UserProfileAPIView.as_view(), name='user-profile'),
+    path('user/id/<str:email>/', GetUserIdByEmailView.as_view(), name='get-user-id'),
 ]
