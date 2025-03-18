@@ -7,8 +7,13 @@ from .serializers import ContactPageSerializer
 
 from django.utils.translation import activate
 
+from drf_yasg.utils import swagger_auto_schema
+
 
 class ContactPageAPIView(APIView):
+    @swagger_auto_schema(
+        operation_description="Retorna o contéudo da tela passando o idioma como parâmetro"
+    )
     def get(self, request):
         lang = request.GET.get("lang")
 
