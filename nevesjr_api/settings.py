@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
+
 import os
 import pymysql
 import environ
+
+from django.utils.translation import gettext_lazy as _
 
 pymysql.install_as_MySQLdb()
 
@@ -60,6 +63,7 @@ INSTALLED_APPS += [
     'rest_framework_simplejwt',
     'drf_yasg',
     'corsheaders',
+    'modeltranslation',
 ]
 
 INSTALLED_APPS += [
@@ -74,6 +78,11 @@ INSTALLED_APPS += [
     'payment',
     'bookings',
     'forgot_password',
+]
+
+INSTALLED_APPS += [
+    'social_media',
+    'contact_page',
 ]
 
 MIDDLEWARE = [
@@ -199,3 +208,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True 
 EMAIL_HOST_USER = "apikey"
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('pt', _('Portuguese')),
+    ('es', _('Spanish')),
+]
