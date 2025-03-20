@@ -30,12 +30,12 @@ class ContactPageAPIView(APIView):
 
         data = {
             "id": serializer.data["id"],
+            "section1_banner": serializer.data["section1_banner"],
             "section1_title": serializer.data.get(f"section1_title_{lang}", ""),
             "section1_description": serializer.data.get(f"section1_description_{lang}", ""),
-            "section2_title": serializer.data.get(f"section2_title_{lang}", ""),
-            "section1_banner": serializer.data["section1_banner"],
-            "section2_banner": serializer.data["section2_banner"],
             "section1_social_media": serializer.data["section1_social_media"],
+            "section2_title": serializer.data.get(f"section2_title_{lang}", ""),
+            "section2_banner": serializer.data["section2_banner"],
         }
 
         return Response(data, status=status.HTTP_200_OK)

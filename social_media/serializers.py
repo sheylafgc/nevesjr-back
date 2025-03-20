@@ -6,4 +6,4 @@ from .models import SocialMedia
 class SocialMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMedia
-        fields = ('phone_whatsapp1', 'phone_whatsapp1', 'email', 'facebook', 'instagram', 'x')
+        fields = ('phone_whatsapp1', 'phone_whatsapp2', 'email', 'facebook', 'instagram', 'x')
