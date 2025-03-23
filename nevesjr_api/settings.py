@@ -84,6 +84,7 @@ INSTALLED_APPS += [
     'social_media',
     'contact_page',
     'be_a_partner_page',
+    'blog_page',
 ]
 
 MIDDLEWARE = [

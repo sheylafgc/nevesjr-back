@@ -1,5 +1,9 @@
 from django.contrib import admin
-
 from .models import Blog
+from .forms import BlogForm
 
-admin.site.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    form = BlogForm
+    exclude = ['title', 'subtitle', 'description', 'category',]
+
+admin.site.register(Blog, BlogAdmin)
