@@ -1,5 +1,3 @@
-import re
-import unicodedata
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,6 +7,9 @@ from .serializers import BlogSerializer
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+from django.utils.translation import activate
+from django.shortcuts import get_object_or_404
 
 
 class BlogListAPIView(APIView):
@@ -46,12 +47,28 @@ class BlogCreateAPIView(APIView):
     
 class BlogDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna um post blog"
+        operation_description="Retorna um post blog passando o idioma como parâmetro"
     )
     def get(self, request, pk):
-        blog = Blog.objects.get(pk=pk)
-        serializer = BlogSerializer(blog)
-        return Response(serializer.data)
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
+        blog = get_object_or_404(Blog, pk=pk)
+
+        blog_data = {
+            "id": blog.id,
+            "title": getattr(blog, f"title_{lang}", blog.title),
+            "subtitle": getattr(blog, f"subtitle_{lang}", blog.subtitle),
+            "description": getattr(blog, f"description_{lang}", blog.description),
+            "category": getattr(blog, f"category_{lang}", blog.category),
+            "image": blog.image.url if blog.image else None
+        }
+
+        return Response(blog_data, status=status.HTTP_200_OK)
     
 class BlogUpdateAPIView(APIView):
     @swagger_auto_schema(
@@ -94,34 +111,56 @@ class BlogDeleteAPIView(APIView):
     
 class BlogCategoryListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Lista todas as categorias do blog",
+        operation_description="Lista todas as categorias do blog passando o idioma como parâmetro",
     )
     def get(self, request):
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
+        category_field = f"category_{lang}"
+
         categories = (
-            Blog.objects.exclude(category__isnull=True)
-            .exclude(category="")
-            .values_list("category", flat=True)
+            Blog.objects.exclude(**{f"{category_field}__isnull": True})
+            .exclude(**{category_field: ""})
+            .values_list(category_field, flat=True)
             .distinct()
         )
 
-        def clean_value(category):
-            category = "".join(
-                c for c in unicodedata.normalize("NFD", category) if unicodedata.category(c) != "Mn"
-            )
-
-            category = re.sub(r"[^a-zA-Z0-9]", "", category)
-            return category.lower()
-
-        formatted_categories = [{"label": category, "value": clean_value(category)} for category in categories]
+        formatted_categories = [{"label": category} for category in categories]
 
         return Response(formatted_categories, status=status.HTTP_200_OK)
     
 class BlogByCategoryAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Lista os post blogs por categoria",
+        operation_description="Lista os post blogs por categoria passando o idioma como parâmetro",
     )
     def get(self, request, category):
-        blogs = Blog.objects.filter(category=category)
-        
-        serializer = BlogSerializer(blogs, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
+        category_field = f"category_{lang}"
+        blogs = Blog.objects.filter(**{category_field: category})
+
+        if not blogs.exists():
+            blogs = Blog.objects.filter(category=category)
+
+        translated_blogs = []
+        for blog in blogs:
+            translated_blogs.append({
+                "id": blog.id,
+                "title": getattr(blog, f"title_{lang}", blog.title),
+                "subtitle": getattr(blog, f"subtitle_{lang}", blog.subtitle),
+                "description": getattr(blog, f"description_{lang}", blog.description),
+                "category": getattr(blog, f"category_{lang}", blog.category),
+                "image": blog.image.url if blog.image else None
+            })
+
+        return Response(translated_blogs, status=status.HTTP_200_OK)
