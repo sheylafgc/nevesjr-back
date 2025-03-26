@@ -57,6 +57,7 @@ urlpatterns = [
     path('api/content/', include("contact_page.urls", namespace="contact-page")),
     path('api/content/', include("be_a_partner_page.urls", namespace="be-a-partner-page")),
     path('api/content/', include("blog_page.urls", namespace="blog-page")),
+    path('api/content/', include("our_services_page.urls", namespace="our-services-page")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path("stripe/webhook/", stripe_webhook, name="stripe-webhook"),
 ]
