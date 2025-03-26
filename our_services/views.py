@@ -8,15 +8,35 @@ from .serializers import OurServiceSerializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+from django.utils.translation import activate
+from django.shortcuts import get_object_or_404
+
 
 class OurServiceListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna todos os serviços"
+        operation_description="Retorna todos os serviços passando o idioma como parâmetro"
     )
     def get(self, request):
-        ourServices = OurService.objects.all()
-        serializer = OurServiceSerializer(ourServices, many=True)
-        return Response(serializer.data)
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
+        services = OurService.objects.all()
+        services_data = [
+            {
+                "id": service.id,
+                "title": getattr(service, f"title_{lang}", service.title),
+                "subtitle": getattr(service, f"subtitle_{lang}", service.subtitle),
+                "description": getattr(service, f"description_{lang}", service.description),
+                "image": service.image.url if service.image else None,
+            }
+            for service in services
+        ]
+
+        return Response(services_data, status=status.HTTP_200_OK)
     
 class OurServiceCreateAPIView(APIView):
     @swagger_auto_schema(
@@ -40,16 +60,31 @@ class OurServiceCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class OurServiceDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna um serviço"
+        operation_description="Retorna um serviço passando o idioma como parâmetro"
     )
     def get(self, request, pk):
-        ourService = OurService.objects.get(pk=pk)
-        serializer = OurServiceSerializer(ourService)
-        return Response(serializer.data)
-    
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
+        service = get_object_or_404(OurService, pk=pk)
+
+        service_data = {
+            "id": service.id,
+            "title": getattr(service, f"title_{lang}", service.title),
+            "subtitle": getattr(service, f"subtitle_{lang}", service.subtitle),
+            "description": getattr(service, f"description_{lang}", service.description),
+            "image": service.image.url if service.image else None,
+        }
+
+        return Response(service_data, status=status.HTTP_200_OK)
+
 class OurServiceUpdateAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Atualiza um serviço",
