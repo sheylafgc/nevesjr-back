@@ -35,7 +35,8 @@ class BlogPageAPIView(APIView):
                 "subtitle": blog.get(f"subtitle_{lang}", blog["subtitle"]),
                 "description": blog.get(f"description_{lang}", blog["description"]),
                 "category": blog.get(f"category_{lang}", blog["category"]),
-                "image": blog["image"]
+                "image": blog["image"],
+                "created_at": blog["created_at"],
             })
 
         return Response(translated_blogs, status=status.HTTP_200_OK)

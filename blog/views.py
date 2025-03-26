@@ -65,7 +65,8 @@ class BlogDetailAPIView(APIView):
             "subtitle": getattr(blog, f"subtitle_{lang}", blog.subtitle),
             "description": getattr(blog, f"description_{lang}", blog.description),
             "category": getattr(blog, f"category_{lang}", blog.category),
-            "image": blog.image.url if blog.image else None
+            "image": blog.image.url if blog.image else None,
+            "created_at": blog.created_at,
         }
 
         return Response(blog_data, status=status.HTTP_200_OK)
@@ -160,7 +161,8 @@ class BlogByCategoryAPIView(APIView):
                 "subtitle": getattr(blog, f"subtitle_{lang}", blog.subtitle),
                 "description": getattr(blog, f"description_{lang}", blog.description),
                 "category": getattr(blog, f"category_{lang}", blog.category),
-                "image": blog.image.url if blog.image else None
+                "image": blog.image.url if blog.image else None,
+                "created_at": blog.created_at,
             })
 
         return Response(translated_blogs, status=status.HTTP_200_OK)
