@@ -1,9 +1,7 @@
-from rest_framework import serializers
-
+from django import forms
 from .models import SocialMedia
 
-
-class SocialMediaSerializer(serializers.ModelSerializer):
+class SocialMediaForm(forms.ModelForm):
     class Meta:
         model = SocialMedia
         fields = '__all__'

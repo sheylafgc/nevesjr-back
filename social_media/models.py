@@ -1,19 +1,17 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+import os
+
+def validate_svg(file):
+    ext = os.path.splitext(file.name)[1]
+    if ext.lower() != ".svg":
+        raise ValidationError("Somente arquivos SVG são permitidos.")
 
 class SocialMedia(models.Model):
-    phone_whatsapp1 = models.CharField(max_length=30, blank=True, null=True)
-    phone_whatsapp2 = models.CharField(max_length=30, blank=True, null=True)
-    email = models.CharField(max_length=50, blank=True, null=True)
-    facebook = models.CharField(max_length=30, blank=True, null=True)
-    instagram = models.CharField(max_length=30, blank=True, null=True)
-    x = models.CharField(max_length=30, blank=True, null=True)
-
-    def save(self, *args, **kwargs):
-        if SocialMedia.objects.exists() and not self.pk:
-            raise ValidationError("Only one SocialMedia registration is allowed.")
-        super().save(*args, **kwargs)
+    icon = models.FileField(upload_to='social_media/icons/', validators=[validate_svg], blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
+    value = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return "Social Media"
+        return self.label if self.label else "Social Media"
