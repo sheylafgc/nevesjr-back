@@ -64,6 +64,7 @@ INSTALLED_APPS += [
     'drf_yasg',
     'corsheaders',
     'modeltranslation',
+    'django_summernote',
 ]
 
 INSTALLED_APPS += [
@@ -87,6 +88,7 @@ INSTALLED_APPS += [
     'blog_page',
     'our_services_page',
     'our_fleet_page',
+    'about_page',
 ]
 
 MIDDLEWARE = [
