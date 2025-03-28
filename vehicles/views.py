@@ -8,15 +8,35 @@ from .serializers import VehicleSerializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+from django.utils.translation import activate
+from django.shortcuts import get_object_or_404
+
 
 class VehicleListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna todos os veículos da frota"
+        operation_description="Retorna todos os veículos da frota passando o idioma como parâmetro"
     )
     def get(self, request):
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
         vehicles = Vehicle.objects.all()
-        serializer = VehicleSerializer(vehicles, many=True)
-        return Response(serializer.data)
+        vehicles_data = [
+            {
+                "id": vehicle.id,
+                "title": getattr(vehicle, f"title_{lang}", vehicle.title),
+                "subtitle": getattr(vehicle, f"subtitle_{lang}", vehicle.subtitle),
+                "description": getattr(vehicle, f"description_{lang}", vehicle.description),
+                "image": vehicle.image.url if vehicle.image else None,
+            }
+            for vehicle in vehicles
+        ]
+
+        return Response(vehicles_data, status=status.HTTP_200_OK)
     
 class VehicleCreateAPIView(APIView):
     @swagger_auto_schema(
@@ -49,12 +69,27 @@ class VehicleCreateAPIView(APIView):
     
 class VehicleDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna um veículo"
+        operation_description="Retorna um veículo passando o idioma como parâmetro"
     )
     def get(self, request, pk):
-        vehicle = Vehicle.objects.get(pk=pk)
-        serializer = VehicleSerializer(vehicle)
-        return Response(serializer.data)
+        lang = request.GET.get("lang")
+
+        if not lang:
+            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        activate(lang)
+
+        vehicle = get_object_or_404(Vehicle, pk=pk)
+
+        vehicle_data = {
+            "id": vehicle.id,
+            "title": getattr(vehicle, f"title_{lang}", vehicle.title),
+            "subtitle": getattr(vehicle, f"subtitle_{lang}", vehicle.subtitle),
+            "description": getattr(vehicle, f"description_{lang}", vehicle.description),
+            "image": vehicle.image.url if vehicle.image else None,
+        }
+
+        return Response(vehicle_data, status=status.HTTP_200_OK)
     
 class VehicleUpdateAPIView(APIView):
     @swagger_auto_schema(
