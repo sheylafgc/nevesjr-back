@@ -9,7 +9,7 @@ from .forms import OurServiceForm
 
 class OurServiceAdmin(SummernoteModelAdmin):
     form = OurServiceForm
-    exclude = ['title', 'subtitle', 'description',]
+    
     def get_summernote_fields(self, request, obj=None):
         summernote_fields = [
             'description', 
