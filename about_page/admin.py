@@ -46,7 +46,6 @@ class AboutPageAdmin(SummernoteModelAdmin):
         self.exclude = self.get_excluded_fields()
         return super().get_form(request, obj, **kwargs)
     
-
 class TeamMemberAdmin(admin.ModelAdmin):
     form = TeamMemberForm
     exclude = ['role',]

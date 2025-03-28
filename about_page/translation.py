@@ -1,6 +1,7 @@
 from modeltranslation.translator import translator, TranslationOptions
 from .models import AboutPage, TeamMember
 
+
 class AboutPageTranslationOptions(TranslationOptions):
     fields = (
         'section1_title', 
