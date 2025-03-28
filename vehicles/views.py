@@ -28,10 +28,16 @@ class VehicleListAPIView(APIView):
         vehicles_data = [
             {
                 "id": vehicle.id,
-                "title": getattr(vehicle, f"title_{lang}", vehicle.title),
-                "subtitle": getattr(vehicle, f"subtitle_{lang}", vehicle.subtitle),
-                "description": getattr(vehicle, f"description_{lang}", vehicle.description),
-                "image": vehicle.image.url if vehicle.image else None,
+                "car_name": getattr(vehicle, f"car_name_{lang}", vehicle.car_name),
+                "car_type": getattr(vehicle, f"car_type_{lang}", vehicle.car_type),
+                "car_overview": getattr(vehicle, f"car_overview_{lang}", vehicle.car_overview),
+                "car_amenities": getattr(vehicle, f"car_amenities_{lang}", vehicle.car_amenities),
+                "car_best_for_services": getattr(vehicle, f"car_best_for_services_{lang}", vehicle.car_best_for_services),
+                "car_image": vehicle.car_image.url if vehicle.car_image else None,
+                "quantity_seats": vehicle.quantity_seats,
+                "quantity_luggage": vehicle.quantity_luggage,
+                "price_km": vehicle.price_km,
+                "price_hour": vehicle.price_hour,
             }
             for vehicle in vehicles
         ]
@@ -83,10 +89,16 @@ class VehicleDetailAPIView(APIView):
 
         vehicle_data = {
             "id": vehicle.id,
-            "title": getattr(vehicle, f"title_{lang}", vehicle.title),
-            "subtitle": getattr(vehicle, f"subtitle_{lang}", vehicle.subtitle),
-            "description": getattr(vehicle, f"description_{lang}", vehicle.description),
-            "image": vehicle.image.url if vehicle.image else None,
+            "car_name": getattr(vehicle, f"car_name_{lang}", vehicle.car_name),
+            "car_type": getattr(vehicle, f"car_type_{lang}", vehicle.car_type),
+            "car_overview": getattr(vehicle, f"car_overview_{lang}", vehicle.car_overview),
+            "car_amenities": getattr(vehicle, f"car_amenities_{lang}", vehicle.car_amenities),
+            "car_best_for_services": getattr(vehicle, f"car_best_for_services_{lang}", vehicle.car_best_for_services),
+            "car_image": vehicle.car_image.url if vehicle.car_image else None,
+            "quantity_seats": vehicle.quantity_seats,
+            "quantity_luggage": vehicle.quantity_luggage,
+            "price_km": vehicle.price_km,
+            "price_hour": vehicle.price_hour,
         }
 
         return Response(vehicle_data, status=status.HTTP_200_OK)
