@@ -4,6 +4,7 @@ from .views import *
 
 app_name = 'our-services'
 
+
 urlpatterns = [
     path('our-service/', OurServiceListAPIView.as_view(), name='our-service-list'),
     path('our-service/<int:pk>/', OurServiceDetailAPIView.as_view(), name='our-service-detail'),

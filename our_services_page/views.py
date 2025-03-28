@@ -9,6 +9,7 @@ from .serializers import OurServicesPageSerializer
 
 from drf_yasg.utils import swagger_auto_schema
 
+
 class OurServicesPageAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Retorna o contéudo da tela OurServices passando o idioma como parâmetro"

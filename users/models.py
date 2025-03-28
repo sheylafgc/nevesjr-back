@@ -1,10 +1,10 @@
 from django.db import models
-
 from django.contrib.auth.models import AbstractUser
 
 from .managers import CustomUserManager
 
 from bookings.choices import TITLE_CHOICES
+
 
 class User(AbstractUser):
     username = None

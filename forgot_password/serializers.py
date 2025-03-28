@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import UserResetPassword
 
+
 class UserResetPasswordSerializer(serializers.ModelSerializer):
     code = serializers.UUIDField(format='hex_verbose')
 

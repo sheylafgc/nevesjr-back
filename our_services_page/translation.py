@@ -1,6 +1,7 @@
 from modeltranslation.translator import translator, TranslationOptions
 from .models import OurService, OurServicesPage
 
+
 class OurServiceTranslationOptions(TranslationOptions):
     fields = ('title', 'subtitle', 'description',)
 

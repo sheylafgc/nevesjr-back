@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,6 +9,7 @@ from .serializers import UserSerializer
 from .models import User
 
 from drf_yasg.utils import swagger_auto_schema
+
 
 class UserListAPIView(APIView):
     permission_classes = [IsAuthenticated]

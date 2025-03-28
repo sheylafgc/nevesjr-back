@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from vehicles.serializers import VehicleSerializer
 from .models import Booking
+
 
 class BookingSerializer(serializers.ModelSerializer):
     vehicle_details = serializers.SerializerMethodField()

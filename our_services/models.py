@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class OurService(models.Model):
     title = models.TextField(blank=True, null=True)
     subtitle = models.TextField(blank=True, null=True)

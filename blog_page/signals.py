@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from blog.models import Blog 
 from .models import BlogPage
 
+
 @receiver(post_save, sender=Blog)
 def create_blog_post_page(sender, instance, created, **kwargs):
     if created:

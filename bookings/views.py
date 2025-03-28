@@ -20,6 +20,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 class BookingListAPIView(APIView):
     permission_classes = [IsAuthenticated]
     

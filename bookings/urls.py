@@ -3,6 +3,7 @@ from .views import *
 
 app_name = 'bookings'
 
+
 urlpatterns = [
     path('booking/', BookingListAPIView.as_view(), name='booking-list-create'),
     path('bookings/<int:pk>/', BookingDetailAPIView.as_view(), name='booking-detail'),

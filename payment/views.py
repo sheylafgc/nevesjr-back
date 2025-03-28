@@ -15,6 +15,7 @@ import requests
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 class PaymentReceiptView(APIView):
     permission_classes = [IsAuthenticated]
 

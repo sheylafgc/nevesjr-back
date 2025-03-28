@@ -4,6 +4,7 @@ from .views import *
 
 app_name = 'vehicle'
 
+
 urlpatterns = [
     path('vehicle', VehicleListAPIView.as_view(), name='vehicle-list'),
     path('vehicle/<int:pk>', VehicleDetailAPIView.as_view(), name='vehicle-detail'),

@@ -14,6 +14,7 @@ from rest_framework import status
 from bookings.models import Booking
 from users.models import User
 
+
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body

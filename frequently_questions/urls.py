@@ -4,6 +4,7 @@ from .views import *
 
 app_name = 'frequently-questions'
 
+
 urlpatterns = [
     path('frequently-questions', FrequentlyQuestionsListAPIView.as_view(), name='frequently-questions-list'),
     path('frequently-questions/<int:pk>', FrequentlyQuestionsDetailAPIView.as_view(), name='frequently-questions-detail'),

@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 import os
 
+
 def validate_svg(file):
     ext = os.path.splitext(file.name)[1]
     if ext.lower() != ".svg":

@@ -9,6 +9,7 @@ from .serializers import BlogPageSerializer
 
 from drf_yasg.utils import swagger_auto_schema
 
+
 class BlogPageAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Retorna o contéudo da tela Blog passando o idioma como parâmetro"
