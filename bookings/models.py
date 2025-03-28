@@ -8,7 +8,7 @@ from .choices import *
 
 
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings", null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings', null=True, blank=True)
     from_route = models.CharField(max_length=255, blank=True, null=True)
     to_route = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
@@ -32,4 +32,4 @@ class Booking(models.Model):
     booking_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Booking for {self.first_name} {self.last_name} on {self.date} at {self.hour}"
+        return f'Booking for {self.first_name} {self.last_name} on {self.date} at {self.hour}'

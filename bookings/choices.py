@@ -4,6 +4,6 @@ BOOKING_FOR_CHOICES = [
 ]
 
 TITLE_CHOICES = [
-    ("Mr", "Mr"),
-    ("Ms", "Ms"),
+    ('Mr', 'Mr'),
+    ('Ms', 'Ms'),
 ]

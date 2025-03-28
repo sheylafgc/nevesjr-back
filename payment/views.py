@@ -20,7 +20,7 @@ class PaymentReceiptView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Passando o id do pagamento retorna o comprovante do pagamento em pdf"
+        operation_description='Passando o id do pagamento retorna o comprovante do pagamento em pdf'
     )
     def get(self, request, payment_intent_id, *args, **kwargs):
         try:
@@ -41,8 +41,8 @@ class PaymentReceiptView(APIView):
             return pdf_response
 
         except stripe.error.StripeError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except requests.RequestException as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

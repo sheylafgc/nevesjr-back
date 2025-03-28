@@ -26,8 +26,8 @@ class BookingSerializer(serializers.ModelSerializer):
     def get_vehicle_details(self, obj):
         if obj.vehicle:
             return {
-                "car_name": obj.vehicle.car_name,
-                "car_type": obj.vehicle.car_type,
-                "car_image": obj.vehicle.car_image.url if obj.vehicle.car_image else None
+                'car_name': obj.vehicle.car_name,
+                'car_type': obj.vehicle.car_type,
+                'car_image': obj.vehicle.car_image.url if obj.vehicle.car_image else None
             }
         return None

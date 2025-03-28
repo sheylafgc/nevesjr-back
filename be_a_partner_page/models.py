@@ -11,8 +11,8 @@ class BeAPartnerPage(models.Model):
 
     def save(self, *args, **kwargs):
         if BeAPartnerPage.objects.exists() and not self.pk:
-            raise ValidationError("Only one BeAPartnerPage registration is allowed.")
+            raise ValidationError('Only one BeAPartnerPage registration is allowed.')
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Be a partner Page"
+        return f'Be a partner Page'

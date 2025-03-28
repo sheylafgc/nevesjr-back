@@ -41,8 +41,8 @@ ALLOWED_HOSTS = ['api.nevesjr.com', '*']
 CSRF_TRUSTED_ORIGINS = ['https://api.nevesjr.com']
 
 CORS_ALLOWED_ORIGINS = [
-    "https://api.nevesjr.com",
-    "https://nevesjr.vercel.app",
+    'https://api.nevesjr.com',
+    'https://nevesjr.vercel.app',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -196,7 +196,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 SWAGGER_SETTINGS = {
@@ -207,12 +207,12 @@ STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
 
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
-EMAIL_BACKEND = "sgbackend.SendGridBackend"
-DEFAULT_FROM_EMAIL = "contact@nevesjr.com"
+EMAIL_BACKEND = 'sgbackend.SendGridBackend'
+DEFAULT_FROM_EMAIL = 'contact@nevesjr.com'
 
 EMAIL_PORT = 587 
 EMAIL_USE_TLS = True 
-EMAIL_HOST_USER = "apikey"
+EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 
 LANGUAGES = [

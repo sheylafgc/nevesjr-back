@@ -11,28 +11,26 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = User
-    list_display = ("email", "is_staff", "is_active",)
-    list_filter = ("email", "is_staff", "is_active",)
+    list_display = ('email', 'is_staff', 'is_active',)
+    list_filter = ('email', 'is_staff', 'is_active',)
     fieldsets = (
         (None, 
             {
-                "fields": (
-                    "first_name", 
-                    "last_name", 
-                    "email", 
-                    "password",
-                    "phone",
-                    "title"
+                'fields': (
+                    'first_name', 
+                    'last_name', 
+                    'email', 
+                    'password',
+                    'phone',
+                    'title',
                 )
             }
         ),
-        ("Permissions", 
+        ('Permissions', 
             {
-                "fields": (
-                    "is_staff", 
-                    "is_active", 
-                    # "groups", 
-                    # "user_permissions"
+                'fields': (
+                    'is_staff', 
+                    'is_active',
                 )
             }
         ),
@@ -40,22 +38,20 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, 
         {
-            "classes": ("wide",),
-            "fields": (
-                "first_name", 
-                "last_name", 
-                "email", 
-                "password",
-                "phone",
-                "title"
-                # "groups", 
-                # "user_permissions"
+            'classes': ('wide',),
+            'fields': (
+                'first_name', 
+                'last_name', 
+                'email', 
+                'password',
+                'phone',
+                'title',
             )
         }
         ),
     )
-    search_fields = ("email",)
-    ordering = ("email",)
+    search_fields = ('email',)
+    ordering = ('email',)
 
 
 admin.site.register(User, CustomUserAdmin)

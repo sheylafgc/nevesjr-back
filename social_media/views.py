@@ -12,27 +12,27 @@ from drf_yasg.utils import swagger_auto_schema
 
 class SocialMediaAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna as redes sociais passando o idioma como parâmetro"
+        operation_description='Retorna as redes sociais passando o idioma como parâmetro'
     )
     def get(self, request):
-        lang = request.GET.get("lang")
+        lang = request.GET.get('lang')
 
         if not lang:
-            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         activate(lang)
 
         social_medias = SocialMedia.objects.all()
         if not social_medias.exists():
-            return Response({"detail": "SocialMedia not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': 'SocialMedia not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = SocialMediaSerializer(social_medias, many=True)
 
         data = [
             {
-                "icon": item["icon"],
-                "label": item.get(f"label_{lang}", ""),
-                "value": item["value"],
+                'icon': item['icon'],
+                'label': item.get(f'label_{lang}', ''),
+                'value': item['value'],
             }
             for item in serializer.data
         ]

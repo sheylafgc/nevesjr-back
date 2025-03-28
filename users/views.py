@@ -15,7 +15,7 @@ class UserListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Retorna todos os usuários"
+        operation_description='Retorna todos os usuários'
     )
     def get(self, request):
         users = User.objects.all()
@@ -27,9 +27,9 @@ class UserCreateAPIView(APIView):
 
     @swagger_auto_schema(
         request_body=UserSerializer,
-        operation_description="Cria um usuário",
+        operation_description='Cria um usuário',
         responses={
-            201: "",
+            201: '',
         }
     )
     def post(self, request, *args, **kwargs):
@@ -43,7 +43,7 @@ class UserDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Retorna um usuário"
+        operation_description='Retorna um usuário'
     )
     def get(self, request, pk):
         user = User.objects.get(pk=pk)
@@ -55,9 +55,9 @@ class UserUpdateAPIView(APIView):
 
     @swagger_auto_schema(
         request_body=UserSerializer, 
-        operation_description="Atualiza um usuário",
+        operation_description='Atualiza um usuário',
         responses={
-            200: "",
+            200: '',
         }, 
     )
     def put(self, request, pk):
@@ -76,7 +76,7 @@ class UserDeleteAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Deleta um usuário"
+        operation_description='Deleta um usuário'
     )
     def delete(self, request, pk):
         user = User.objects.get(pk=pk)
@@ -87,7 +87,7 @@ class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Retorna o perfil de um usuário"
+        operation_description='Retorna o perfil de um usuário'
     )
     def get(self, request):
         user = request.user
@@ -97,4 +97,4 @@ class UserProfileAPIView(APIView):
 class GetUserIdByEmailView(APIView):
     def get(self, request, email):
         user = get_object_or_404(User, email=email)
-        return Response({"id": user.id}, status=status.HTTP_200_OK)
+        return Response({'id': user.id}, status=status.HTTP_200_OK)

@@ -11,7 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 class FeedbackListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna todos os feedbacks"
+        operation_description='Retorna todos os feedbacks'
     )
     def get(self, request):
         feedbacks = Feedback.objects.all()
@@ -20,18 +20,18 @@ class FeedbackListAPIView(APIView):
     
 class FeedbackCreateAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Cria um feedback",
+        operation_description='Cria um feedback',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'name': openapi.Schema(type=openapi.TYPE_STRING, description="Nome do usuário"),
-                'occupation': openapi.Schema(type=openapi.TYPE_STRING, description="Profissão do usuário"),
-                'user_image': openapi.Schema(type=openapi.TYPE_FILE, description="Imagem do usuário"),
-                'opinion': openapi.Schema(type=openapi.TYPE_STRING, description="Opinião do usuário"),
+                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Nome do usuário'),
+                'occupation': openapi.Schema(type=openapi.TYPE_STRING, description='Profissão do usuário'),
+                'user_image': openapi.Schema(type=openapi.TYPE_FILE, description='Imagem do usuário'),
+                'opinion': openapi.Schema(type=openapi.TYPE_STRING, description='Opinião do usuário'),
             },
         ),
         responses={
-            201: "",
+            201: '',
         }
     )
     def post(self, request, *args, **kwargs):
@@ -43,7 +43,7 @@ class FeedbackCreateAPIView(APIView):
     
 class FeedbackDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna um feedback"
+        operation_description='Retorna um feedback'
     )
     def get(self, request, pk):
         feedback = Feedback.objects.get(pk=pk)

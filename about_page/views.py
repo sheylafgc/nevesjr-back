@@ -12,10 +12,10 @@ from drf_yasg.utils import swagger_auto_schema
 
 class AboutPageAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna o contéudo da tela About passando o idioma como parâmetro"
+        operation_description='Retorna o contéudo da tela About passando o idioma como parâmetro'
     )
     def get(self, request):
-        lang = request.GET.get("lang")
+        lang = request.GET.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)

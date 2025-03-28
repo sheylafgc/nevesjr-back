@@ -18,7 +18,7 @@ from users.models import User
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
-    sig_header = request.headers.get("Stripe-Signature")
+    sig_header = request.headers.get('Stripe-Signature')
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:

@@ -13,7 +13,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length=50, blank=True, null=True)
     title = models.CharField(max_length=2, choices=TITLE_CHOICES, blank=True, null=True)
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()

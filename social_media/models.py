@@ -6,8 +6,8 @@ import os
 
 def validate_svg(file):
     ext = os.path.splitext(file.name)[1]
-    if ext.lower() != ".svg":
-        raise ValidationError("Somente arquivos SVG são permitidos.")
+    if ext.lower() != '.svg':
+        raise ValidationError('Only SVG files are allowed.')
 
 class SocialMedia(models.Model):
     icon = models.FileField(upload_to='social_media/icons/', validators=[validate_svg], blank=True, null=True)
@@ -15,4 +15,4 @@ class SocialMedia(models.Model):
     value = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.label if self.label else "Social Media"
+        return self.label if self.label else 'Social Media'

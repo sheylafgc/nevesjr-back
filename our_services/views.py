@@ -14,24 +14,24 @@ from django.shortcuts import get_object_or_404
 
 class OurServiceListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna todos os serviços passando o idioma como parâmetro"
+        operation_description='Retorna todos os serviços passando o idioma como parâmetro'
     )
     def get(self, request):
-        lang = request.GET.get("lang")
+        lang = request.GET.get('lang')
 
         if not lang:
-            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         activate(lang)
 
         services = OurService.objects.all()
         services_data = [
             {
-                "id": service.id,
-                "title": getattr(service, f"title_{lang}", service.title),
-                "subtitle": getattr(service, f"subtitle_{lang}", service.subtitle),
-                "description": getattr(service, f"description_{lang}", service.description),
-                "image": service.image.url if service.image else None,
+                'id': service.id,
+                'title': getattr(service, f'title_{lang}', service.title),
+                'subtitle': getattr(service, f'subtitle_{lang}', service.subtitle),
+                'description': getattr(service, f'description_{lang}', service.description),
+                'image': service.image.url if service.image else None,
             }
             for service in services
         ]
@@ -40,18 +40,18 @@ class OurServiceListAPIView(APIView):
     
 class OurServiceCreateAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Cria um serviço",
+        operation_description='Cria um serviço',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'title': openapi.Schema(type=openapi.TYPE_STRING, description="Título do serviço"),
-                'subtitle': openapi.Schema(type=openapi.TYPE_STRING, description="Subtítulo do serviço"),
-                'image': openapi.Schema(type=openapi.TYPE_FILE, description="Imagem do serviço"),
-                'description': openapi.Schema(type=openapi.TYPE_STRING, description="Descrição do serviço"),
+                'title': openapi.Schema(type=openapi.TYPE_STRING, description='Título do serviço'),
+                'subtitle': openapi.Schema(type=openapi.TYPE_STRING, description='Subtítulo do serviço'),
+                'image': openapi.Schema(type=openapi.TYPE_FILE, description='Imagem do serviço'),
+                'description': openapi.Schema(type=openapi.TYPE_STRING, description='Descrição do serviço'),
             },
         ),
         responses={
-            201: "",
+            201: '',
         }
     )
     def post(self, request, *args, **kwargs):
@@ -63,31 +63,31 @@ class OurServiceCreateAPIView(APIView):
 
 class OurServiceDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna um serviço passando o idioma como parâmetro"
+        operation_description='Retorna um serviço passando o idioma como parâmetro'
     )
     def get(self, request, pk):
-        lang = request.GET.get("lang")
+        lang = request.GET.get('lang')
 
         if not lang:
-            return Response({"error": "The ‘lang’ parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         activate(lang)
 
         service = get_object_or_404(OurService, pk=pk)
 
         service_data = {
-            "id": service.id,
-            "title": getattr(service, f"title_{lang}", service.title),
-            "subtitle": getattr(service, f"subtitle_{lang}", service.subtitle),
-            "description": getattr(service, f"description_{lang}", service.description),
-            "image": service.image.url if service.image else None,
+            'id': service.id,
+            'title': getattr(service, f'title_{lang}', service.title),
+            'subtitle': getattr(service, f'subtitle_{lang}', service.subtitle),
+            'description': getattr(service, f'description_{lang}', service.description),
+            'image': service.image.url if service.image else None,
         }
 
         return Response(service_data, status=status.HTTP_200_OK)
 
 class OurServiceUpdateAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Atualiza um serviço",
+        operation_description='Atualiza um serviço',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -98,7 +98,7 @@ class OurServiceUpdateAPIView(APIView):
             }, 
         ),
         responses={
-            200: "",
+            200: '',
         }, 
     )
     def put(self, request, pk):
@@ -115,7 +115,7 @@ class OurServiceUpdateAPIView(APIView):
     
 class OurServiceDeleteAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Deleta um serviço"
+        operation_description='Deleta um serviço'
     )
     def delete(self, request, pk):
         ourService = OurService.objects.get(pk=pk)

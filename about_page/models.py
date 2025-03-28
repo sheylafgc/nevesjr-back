@@ -22,14 +22,14 @@ class AboutPage(models.Model):
 
     def save(self, *args, **kwargs):
         if AboutPage.objects.exists() and not self.pk:
-            raise ValidationError("Only one AboutPage registration is allowed.")
+            raise ValidationError('Only one AboutPage registration is allowed.')
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"About Page"
+        return f'About Page'
 
 class TeamMember(models.Model):
-    about_page = models.ForeignKey(AboutPage, on_delete=models.CASCADE, related_name="team_members")
+    about_page = models.ForeignKey(AboutPage, on_delete=models.CASCADE, related_name='team_members')
     name = models.CharField(max_length=255)
     role = models.CharField(max_length=255, blank=True, null=True)
     avatar = models.ImageField(upload_to='about_page/section5/team_avatars', blank=True, null=True)

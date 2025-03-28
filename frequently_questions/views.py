@@ -11,7 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 class FrequentlyQuestionsListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna todas os perguntas frequentes"
+        operation_description='Retorna todas os perguntas frequentes'
     )
     def get(self, request):
         frequentlyQuestions = FrequentlyQuestions.objects.all()
@@ -20,16 +20,16 @@ class FrequentlyQuestionsListAPIView(APIView):
     
 class FrequentlyQuestionsCreateAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Cria uma pergunta frequente",
+        operation_description='Cria uma pergunta frequente',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'question': openapi.Schema(type=openapi.TYPE_STRING, description="Pergunta frequente"),
-                'answer': openapi.Schema(type=openapi.TYPE_STRING, description="Resposta"),
+                'question': openapi.Schema(type=openapi.TYPE_STRING, description='Pergunta frequente'),
+                'answer': openapi.Schema(type=openapi.TYPE_STRING, description='Resposta'),
             },
         ),
         responses={
-            201: "",
+            201: '',
         }
     )
     def post(self, request, *args, **kwargs):
@@ -41,7 +41,7 @@ class FrequentlyQuestionsCreateAPIView(APIView):
     
 class FrequentlyQuestionsDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna uma pergunta frequente"
+        operation_description='Retorna uma pergunta frequente'
     )
     def get(self, request, pk):
         frequentlyQuestions = FrequentlyQuestions.objects.get(pk=pk)
@@ -50,16 +50,16 @@ class FrequentlyQuestionsDetailAPIView(APIView):
     
 class FrequentlyQuestionsUpdateAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Atualiza uma pergunta frequente",
+        operation_description='Atualiza uma pergunta frequente',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'question': openapi.Schema(type=openapi.TYPE_STRING, description="Pergunta frequente"),
-                'answer': openapi.Schema(type=openapi.TYPE_STRING, description="Resposta"),
+                'question': openapi.Schema(type=openapi.TYPE_STRING, description='Pergunta frequente'),
+                'answer': openapi.Schema(type=openapi.TYPE_STRING, description='Resposta'),
             },
         ),
         responses={
-            200: "",
+            200: '',
         }, 
     )
     def put(self, request, pk):
@@ -76,7 +76,7 @@ class FrequentlyQuestionsUpdateAPIView(APIView):
     
 class FrequentlyQuestionsDeleteAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Deleta uma pergunta frequente"
+        operation_description='Deleta uma pergunta frequente'
     )
     def delete(self, request, pk):
         frequentlyQuestions = FrequentlyQuestions.objects.get(pk=pk)

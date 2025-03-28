@@ -11,7 +11,7 @@ from django.conf import settings
 
 @csrf_exempt
 def send_email_reset_password(email, user_name, code):
-    reset_link = f"https://nevesjr.vercel.app/auth/ValidateCode?code={code}&email={email}"
+    reset_link = f'https://nevesjr.vercel.app/auth/ValidateCode?code={code}&email={email}'
 
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
@@ -31,13 +31,13 @@ def send_email_reset_password(email, user_name, code):
         response = sg.send(message)
 
         return JsonResponse({
-            "status": "success",
-            "message": "Email sent successfully",
-            "status_code": response.status_code
+            'status': 'success',
+            'message': 'Email sent successfully',
+            'status_code': response.status_code
         })
 
     except Exception as e:
         return JsonResponse({
-            "status": "error",
-            "message": str(e)
+            'status': 'error',
+            'message': str(e)
         }, status=500)

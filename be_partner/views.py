@@ -11,7 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 class BePartnerListAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna todos as solicitações"
+        operation_description='Retorna todos as solicitações'
     )
     def get(self, request):
         bePartner = BePartner.objects.all()
@@ -20,18 +20,18 @@ class BePartnerListAPIView(APIView):
     
 class BePartnerCreateAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Cria um formulário para ser parceiro",
+        operation_description='Cria um formulário para ser parceiro',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'name': openapi.Schema(type=openapi.TYPE_STRING, description="Nome do usuário"),
-                'email': openapi.Schema(type=openapi.TYPE_STRING, description="Email do usuário"),
-                'phone': openapi.Schema(type=openapi.TYPE_STRING, description="Telefone do usuário"),
-                'car_model': openapi.Schema(type=openapi.TYPE_STRING, description="Modelo do carro"),
+                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Nome do usuário'),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='Email do usuário'),
+                'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Telefone do usuário'),
+                'car_model': openapi.Schema(type=openapi.TYPE_STRING, description='Modelo do carro'),
             },
         ),
         responses={
-            201: "",
+            201: '',
         }
     )
     def post(self, request, *args, **kwargs):
@@ -43,7 +43,7 @@ class BePartnerCreateAPIView(APIView):
     
 class BePartnerDetailAPIView(APIView):
     @swagger_auto_schema(
-        operation_description="Retorna uma solicitação"
+        operation_description='Retorna uma solicitação'
     )
     def get(self, request, pk):
         bePartner = BePartner.objects.get(pk=pk)

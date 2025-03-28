@@ -14,8 +14,8 @@ class ContactPage(models.Model):
 
     def save(self, *args, **kwargs):
         if ContactPage.objects.exists() and not self.pk:
-            raise ValidationError("Only one ContactPage registration is allowed.")
+            raise ValidationError('Only one ContactPage registration is allowed.')
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Contact Page"
+        return f'Contact Page'
