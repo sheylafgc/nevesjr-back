@@ -14,4 +14,4 @@ class Vehicle(models.Model):
     car_best_for_services = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.title if self.title else self.car_name
+        return self.car_name if self.car_name else "Untitled OurFleet"
