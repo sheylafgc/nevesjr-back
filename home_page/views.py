@@ -37,7 +37,8 @@ class HomePageAPIView(APIView):
             'section1_title': getattr(home_page, f'section1_title_{lang}', ''),
             'section2_title': getattr(home_page, f'section2_title_{lang}', ''),
             'section2_image': serializer.data['section2_image'],
-            'section2_services': OurServiceSerializer(home_page.section2_services.all(), many=True).data,
+            'section2_services': OurServiceSerializer(
+                home_page.section2_services.filter(language=lang), many=True).data,
             'section3_title': getattr(home_page, f'section3_title_{lang}', ''),
             'section3_image': serializer.data['section3_image'],
             'differentials': serializer.data['differentials'],
@@ -46,12 +47,15 @@ class HomePageAPIView(APIView):
             'section4_description': getattr(home_page, f'section4_description_{lang}', ''),
             'section5_title': serializer.data['section5_title'],
             'section5_subtitle': getattr(home_page, f'section5_subtitle_{lang}', ''),
-            'section5_feedbacks': FeedbackSerializer(home_page.section5_feedbacks.all(), many=True).data,
+            'section5_feedbacks': FeedbackSerializer(
+                home_page.section5_feedbacks.filter(language=lang), many=True).data,  # Filtrando os feedbacks
             'section6_title': getattr(home_page, f'section6_title_{lang}', ''),
             'section6_subtitle': getattr(home_page, f'section6_subtitle_{lang}', ''),
-            'section6_vehicles': VehicleSerializer(home_page.section6_vehicles.all(), many=True).data,
+            'section6_vehicles': VehicleSerializer(
+                home_page.section6_vehicles.filter(language=lang), many=True).data,  # Filtrando veículos
             'section7_title': getattr(home_page, f'section7_title_{lang}', ''),
-            'section7_frequently_questions': FrequentlyQuestionsSerializer(home_page.section7_frequently_questions.all(), many=True).data,
+            'section7_frequently_questions': FrequentlyQuestionsSerializer(
+                home_page.section7_frequently_questions.filter(language=lang), many=True).data,  # Perguntas frequentes
             'section8_title': getattr(home_page, f'section8_title_{lang}', ''),
             'section8_banner': serializer.data['section8_banner'],
         }
