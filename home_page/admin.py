@@ -45,7 +45,7 @@ class HomePageAdmin(SummernoteModelAdmin):
         self.exclude = self.get_excluded_fields()
         return super().get_form(request, obj, **kwargs)
     
-class HomePageDifferentialsAdmin(admin.ModelAdmin):
+class HomePageDifferentialsAdmin(SummernoteModelAdmin):
     form = HomePageDifferentialsForm
     exclude = ['title', 'description',]
 

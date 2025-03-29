@@ -60,6 +60,7 @@ urlpatterns = [
     path('api/content/', include('our_services_page.urls', namespace='our-services-page')),
     path('api/content/', include('our_fleet_page.urls', namespace='our-fleet-page')),
     path('api/content/', include('about_page.urls', namespace='about-page')),
+    path('api/content/', include('home_page.urls', namespace='home-page')),
     path('summernote/', include('django_summernote.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('stripe/webhook/', stripe_webhook, name='stripe-webhook'),
