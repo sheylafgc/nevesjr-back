@@ -29,7 +29,6 @@ class AboutPageAPIView(APIView):
         serializer = AboutPageSerializer(about_page)
 
         data = {
-            'id': serializer.data['id'],
             'section1_title': getattr(about_page, f'section1_title_{lang}', ''),
             'section1_subtitle': getattr(about_page, f'section1_subtitle_{lang}', ''),
             'section1_video': serializer.data['section1_video'],

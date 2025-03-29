@@ -25,7 +25,7 @@ class FeedbackCreateAPIView(APIView):
             type=openapi.TYPE_OBJECT,
             properties={
                 'name': openapi.Schema(type=openapi.TYPE_STRING, description='Nome do usuário'),
-                'occupation': openapi.Schema(type=openapi.TYPE_STRING, description='Profissão do usuário'),
+                'role': openapi.Schema(type=openapi.TYPE_STRING, description='Profissão do usuário'),
                 'user_image': openapi.Schema(type=openapi.TYPE_FILE, description='Imagem do usuário'),
                 'opinion': openapi.Schema(type=openapi.TYPE_STRING, description='Opinião do usuário'),
             },
