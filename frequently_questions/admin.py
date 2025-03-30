@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django_summernote.admin import SummernoteModelAdmin
 
 from modeltranslation.utils import get_translation_fields
 
@@ -6,9 +7,9 @@ from .models import FrequentlyQuestions
 from .forms import FrequentlyQuestionsForm
 
 
-class FrequentlyQuestionsAdmin(admin.ModelAdmin):
+class FrequentlyQuestionsAdmin(SummernoteModelAdmin):
     form = FrequentlyQuestionsForm
-    # exclude = ['question', 'answer',]
+
     def get_summernote_fields(self, request, obj=None):
         summernote_fields = [
             'question', 
