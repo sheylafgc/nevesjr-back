@@ -6,4 +6,4 @@ class FrequentlyQuestions(models.Model):
     answer = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.question
+        return self.question if self.question else 'Untitled FrequentlyQuestions'
