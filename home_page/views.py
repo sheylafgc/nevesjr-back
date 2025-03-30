@@ -61,7 +61,7 @@ class HomePageAPIView(APIView):
                 translated_differentials.append({
                     'id': differential['id'],
                     'title': differential.get(f'title_{lang}', differential['title']),
-                    'description': differential.get(f'subtitle_{lang}', differential['subtitle']),
+                    'description': differential.get(f'description_{lang}', differential['description']),
                 })
                 response_data['differentials'] = translated_differentials
         
