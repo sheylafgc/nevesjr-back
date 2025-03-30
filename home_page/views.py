@@ -106,14 +106,14 @@ class HomePageAPIView(APIView):
 
         section7_frequently_questions = serializer.data.get('section7_frequently_questions', [])
         if section7_frequently_questions:
-            translated_frequently_questions = []
-            for frequently_questions in section7_frequently_questions:
-                translated_frequently_questions.append({
-                    'id': frequently_questions['id'],
-                    'question': frequently_questions.get(f'question_{lang}', frequently_questions['question']),
-                    'answer': frequently_questions.get(f'answer_{lang}', frequently_questions['answer']),
+            translated_questions = []
+            for question in section7_frequently_questions:
+                translated_questions.append({
+                    'id': question['id'],
+                    'question': question.get(f'question_{lang}', question['question']),
+                    'answer': question.get(f'answer_{lang}', question['answer']),
                 })
-            response_data['section7_frequently_questions'] = translated_frequently_questions
+            response_data['section7_frequently_questions'] = translated_questions
 
         response_data['section8_title'] = getattr(home_page, f'section8_title_{lang}', '')
         response_data['section8_banner'] = serializer.data['section8_banner']
