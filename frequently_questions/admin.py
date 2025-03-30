@@ -1,6 +1,10 @@
 from django.contrib import admin
-
 from .models import FrequentlyQuestions
+from .forms import FrequentlyQuestionsForm
 
 
-admin.site.register(FrequentlyQuestions)
+class FrequentlyQuestionsAdmin(admin.ModelAdmin):
+    form = FrequentlyQuestionsForm
+    exclude = ['question', 'answer',]
+
+admin.site.register(FrequentlyQuestions, FrequentlyQuestionsAdmin)
