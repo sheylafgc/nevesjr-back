@@ -27,6 +27,7 @@ class HomePageSerializer(serializers.ModelSerializer):
             'section2_title',
             'section2_image',
             'section2_services',
+            'section2_description',
             'section3_title',
             'section3_image',
             'differentials',

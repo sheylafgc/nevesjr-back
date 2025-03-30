@@ -46,11 +46,11 @@ class HomePageAPIView(APIView):
                 translated_services.append({
                     'id': service['id'],
                     'title': service.get(f'title_{lang}', service['title']),
-                    'subtitle': service.get(f'subtitle_{lang}', service['subtitle']),
                     'image': service['image'],
                 })
             response_data['section2_services'] = translated_services
 
+        response_data['section2_description'] = getattr(home_page, f'section2_description_{lang}', '')
         response_data['section3_title'] = getattr(home_page, f'section3_title_{lang}', '')
         response_data['section3_image'] = serializer.data['section3_image']
 

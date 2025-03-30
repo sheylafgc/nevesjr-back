@@ -28,6 +28,7 @@ class HomePageAdmin(SummernoteModelAdmin):
         summernote_fields = [
             'section1_title', 
             'section2_title', 
+            'section2_description',
             'section3_title', 
             'section4_title', 
             'section4_description', 
