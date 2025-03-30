@@ -22,16 +22,16 @@ class FrequentlyQuestionsAdmin(SummernoteModelAdmin):
 
         return translated_fields
 
-    def get_excluded_fields(self):
-        summernote_fields = [
-            'question', 
-            'answer',
-        ]
-        return summernote_fields
+    # def get_excluded_fields(self):
+    #     summernote_fields = [
+    #         'question', 
+    #         'answer',
+    #     ]
+    #     return summernote_fields
 
     def get_form(self, request, obj=None, **kwargs):
         self.summernote_fields = self.get_summernote_fields(request, obj)
-        self.exclude = self.get_excluded_fields()
+        # self.exclude = self.get_excluded_fields()
         return super().get_form(request, obj, **kwargs)
 
 admin.site.register(FrequentlyQuestions, FrequentlyQuestionsAdmin)
