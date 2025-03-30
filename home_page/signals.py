@@ -2,15 +2,29 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .models import HomePage
-from our_services.models import OurService
-from feedback.models import Feedback
-from vehicles.models import Vehicle
-from frequently_questions.models import FrequentlyQuestions
 
-@receiver(post_save, sender=HomePage)
-def create_home_page_relations(sender, instance, created, **kwargs):
+
+def add_differentials_to_homepage(sender, instance, created, **kwargs):
     if created:
-        instance.section2_services.add(*OurService.objects.all())
-        instance.section5_feedbacks.add(*Feedback.objects.all())
-        instance.section6_vehicles.add(*Vehicle.objects.all()) 
-        instance.section7_frequently_questions.add(*FrequentlyQuestions.objects.all())
+        homepage, _ = HomePage.objects.get_or_create()
+        homepage.differentials.add(instance)
+
+def add_our_services_to_homepage(sender, instance, created, **kwargs):
+    if created:
+        homepage, _ = HomePage.objects.get_or_create()
+        homepage.section2_services.add(instance)
+
+def add_feedbacks_to_homepage(sender, instance, created, **kwargs):
+    if created:
+        homepage, _ = HomePage.objects.get_or_create()
+        homepage.section5_feedbacks.add(instance)
+
+def add_vehicles_to_homepage(sender, instance, created, **kwargs):
+    if created:
+        homepage, _ = HomePage.objects.get_or_create()
+        homepage.section6_vehicles.add(instance)
+
+def add_frequently_question_to_homepage(sender, instance, created, **kwargs):
+    if created:
+        homepage, _ = HomePage.objects.get_or_create()
+        homepage.section7_frequently_questions.add(instance)
