@@ -29,6 +29,7 @@ class Booking(models.Model):
     payment_intent_id = models.CharField(max_length=255, blank=True, null=True)
     payment_status = models.CharField(max_length=255, blank=True, null=True)
     payment_brand = models.CharField(max_length=255, blank=True, null=True)
+    booking_status = models.CharField(max_length=255, blank=True, null=True)
     booking_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

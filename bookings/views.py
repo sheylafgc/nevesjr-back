@@ -179,6 +179,9 @@ class BookingCancelAPIView(APIView):
 
         if booking.payment_status != 'approved':
             return Response({'error': 'Booking cannot be cancelled because payment has not been approved.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if booking.booking_status != 'upcoming':
+            return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refund = stripe.Refund.create(
@@ -186,6 +189,7 @@ class BookingCancelAPIView(APIView):
             )
 
             booking.payment_status = 'canceled'
+            booking.booking_status = 'canceled'
             booking.save()
 
             return Response({'status': 'Booking cancelled and refund successful.'}, status=status.HTTP_200_OK)
@@ -206,14 +210,25 @@ class BookingByUserAPIView(APIView):
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class BookingCanceledByUseAPIView(APIView):
+class BookingCanceledByUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_description='Lista as reservas do usuário com status cancelado'
     )
     def get(self, request, user_id):
-        bookings = Booking.objects.filter(user_id=user_id, payment_status='canceled')
+        bookings = Booking.objects.filter(user_id=user_id, booking_status='canceled')
+        serializer = BookingSerializer(bookings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class BookingCanceledAdminListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description='Lista todas as reservas com status cancelado'
+    )
+    def get(self, request):
+        bookings = Booking.objects.filter(booking_status='canceled')
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -224,19 +239,13 @@ class BookingFutureByUserAPIView(APIView):
         operation_description='Lista as reservas futuras de um determinado usuário'
     )
     def get(self, request, user_id):
-        current_datetime = now()
         future_bookings = Booking.objects.filter(
-            user_id=user_id
-        ).exclude(payment_status='canceled').filter(
-            date__gt=current_datetime
-        ) | Booking.objects.filter(
-            user_id=user_id
-        ).exclude(payment_status='canceled').filter(
-            date=current_datetime, hour__gt=current_datetime.time()
-        )
+            user_id=user_id, booking_status='upcoming'
+        ).exclude(payment_status='canceled')
+
         serializer = BookingSerializer(future_bookings, many=True)
-        return Response(serializer.data)
-    
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class BookingPastByUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -244,15 +253,37 @@ class BookingPastByUserAPIView(APIView):
         operation_description='Lista as reservas passadas de um determinado usuário'
     )
     def get(self, request, user_id):
-        current_datetime = now()
         past_bookings = Booking.objects.filter(
-            user_id=user_id
-        ).exclude(payment_status='canceled').filter(
-            date__lt=current_datetime
-        ) | Booking.objects.filter(
-            user_id=user_id
-        ).exclude(payment_status='canceled').filter(
-            date=current_datetime, hour__lt=current_datetime.time()
-        )
+            user_id=user_id, booking_status='past'
+        ).exclude(payment_status='canceled')
+
         serializer = BookingSerializer(past_bookings, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class BookingFutureAdminListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description='Lista todas as reservas futuras'
+    )
+    def get(self, request):
+        future_bookings = Booking.objects.filter(
+            booking_status='upcoming'
+        ).exclude(payment_status='canceled')
+
+        serializer = BookingSerializer(future_bookings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class BookingPastAdminListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description='Lista todas as reservas passadas'
+    )
+    def get(self, request):
+        past_bookings = Booking.objects.filter(
+            booking_status='past'
+        ).exclude(payment_status='canceled')
+
+        serializer = BookingSerializer(past_bookings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

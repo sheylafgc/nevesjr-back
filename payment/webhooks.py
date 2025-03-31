@@ -78,6 +78,7 @@ def stripe_webhook(request):
             payment_status='approved',
             payment_brand=charge.payment_method_details.card.brand,
             user=user,
+            booking_status='upcoming',
         )
 
     return JsonResponse({'status': 'success'}, status=status.HTTP_200_OK)
