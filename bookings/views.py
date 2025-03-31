@@ -1,5 +1,10 @@
 from decimal import ROUND_DOWN, Decimal
+
 from django.conf import settings
+from django.utils import timezone
+
+from datetime import timedelta
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,6 +24,8 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+from datetime import datetime
 
 
 class BookingListAPIView(APIView):
@@ -182,6 +189,15 @@ class BookingCancelAPIView(APIView):
         
         if booking.booking_status != 'upcoming':
             return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        current_time = timezone.now().time()
+        booking_hour = booking.hour 
+
+        current_datetime = timezone.now().replace(hour=current_time.hour, minute=current_time.minute, second=current_time.second, microsecond=0)
+        booking_datetime = timezone.now().replace(hour=booking_hour.hour, minute=booking_hour.minute, second=booking_hour.second, microsecond=0)
+
+        if current_datetime - booking_datetime > timedelta(hours=1):
+            return Response({'error': 'Booking cannot be cancelled because it is 1 hour or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refund = stripe.Refund.create(
@@ -241,7 +257,7 @@ class BookingFutureByUserAPIView(APIView):
     def get(self, request, user_id):
         future_bookings = Booking.objects.filter(
             user_id=user_id, booking_status='upcoming'
-        )
+        ).exclude(payment_status='canceled')
 
         serializer = BookingSerializer(future_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -255,7 +271,7 @@ class BookingPastByUserAPIView(APIView):
     def get(self, request, user_id):
         past_bookings = Booking.objects.filter(
             user_id=user_id, booking_status='past'
-        )
+        ).exclude(payment_status='canceled')
 
         serializer = BookingSerializer(past_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -269,7 +285,7 @@ class BookingFutureAdminListAPIView(APIView):
     def get(self, request):
         future_bookings = Booking.objects.filter(
             booking_status='upcoming'
-        )
+        ).exclude(payment_status='canceled')
 
         serializer = BookingSerializer(future_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -283,7 +299,30 @@ class BookingPastAdminListAPIView(APIView):
     def get(self, request):
         past_bookings = Booking.objects.filter(
             booking_status='past'
-        )
+        ).exclude(payment_status='canceled')
 
         serializer = BookingSerializer(past_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class BookingUpdateStatusAdminAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description='Atualiza o status de uma reserva específica de upcoming para past'
+    )
+    def post(self, request, booking_id):
+        try:
+            booking = Booking.objects.get(id=booking_id, booking_status='upcoming')
+            booking.booking_status = 'past'
+            booking.save()
+
+            return Response(
+                {'message': f"Booking {booking_id} has been updated to 'past'."},
+                status=status.HTTP_200_OK
+            )
+
+        except Booking.DoesNotExist:
+            return Response(
+                {'error': "Reservation not found or not in 'upcoming' status."},
+                status=status.HTTP_404_NOT_FOUND
+            )

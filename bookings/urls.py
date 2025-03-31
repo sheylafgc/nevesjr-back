@@ -19,4 +19,5 @@ urlpatterns = [
     path('booking/past/user/<int:user_id>/', BookingPastByUserAPIView.as_view(), name='canceled-bookings-by-user'),
     path('booking/future/admin/', BookingFutureAdminListAPIView.as_view(), name='future-bookings-admin-list'),
     path('booking/past/admin/', BookingPastAdminListAPIView.as_view(), name='canceled-bookings-admin-list'),
+    path('booking/finish/', BookingUpdateStatusAdminAPIView.as_view(), name='booking-finish-race'),
 ]
