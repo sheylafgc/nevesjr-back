@@ -241,7 +241,7 @@ class BookingFutureByUserAPIView(APIView):
     def get(self, request, user_id):
         future_bookings = Booking.objects.filter(
             user_id=user_id, booking_status='upcoming'
-        ).exclude(payment_status='canceled')
+        )
 
         serializer = BookingSerializer(future_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -255,7 +255,7 @@ class BookingPastByUserAPIView(APIView):
     def get(self, request, user_id):
         past_bookings = Booking.objects.filter(
             user_id=user_id, booking_status='past'
-        ).exclude(payment_status='canceled')
+        )
 
         serializer = BookingSerializer(past_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -269,7 +269,7 @@ class BookingFutureAdminListAPIView(APIView):
     def get(self, request):
         future_bookings = Booking.objects.filter(
             booking_status='upcoming'
-        ).exclude(payment_status='canceled')
+        )
 
         serializer = BookingSerializer(future_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -283,7 +283,7 @@ class BookingPastAdminListAPIView(APIView):
     def get(self, request):
         past_bookings = Booking.objects.filter(
             booking_status='past'
-        ).exclude(payment_status='canceled')
+        )
 
         serializer = BookingSerializer(past_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
