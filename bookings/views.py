@@ -2,6 +2,8 @@ from decimal import ROUND_DOWN, Decimal
 
 from django.conf import settings
 from django.utils import timezone
+from django.utils.timezone import now
+from django.shortcuts import get_object_or_404
 
 from datetime import timedelta
 
@@ -10,13 +12,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from django.utils.timezone import now
-
-from django.shortcuts import get_object_or_404
-
 from .models import Booking
-
 from .serializers import BookingSerializer
+from emails_booking.emails import send_email_template
+from emails_booking.models import EmailRaceFinish
 
 import stripe
 
@@ -24,8 +23,6 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
-from datetime import datetime
 
 
 class BookingListAPIView(APIView):
@@ -196,8 +193,8 @@ class BookingCancelAPIView(APIView):
         current_datetime = timezone.now().replace(hour=current_time.hour, minute=current_time.minute, second=current_time.second, microsecond=0)
         booking_datetime = timezone.now().replace(hour=booking_hour.hour, minute=booking_hour.minute, second=booking_hour.second, microsecond=0)
 
-        if current_datetime - booking_datetime > timedelta(hours=1):
-            return Response({'error': 'Booking cannot be cancelled because it is 1 hour or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
+        if current_datetime - booking_datetime > timedelta(hours=2):
+            return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refund = stripe.Refund.create(
@@ -316,8 +313,12 @@ class BookingUpdateStatusAdminAPIView(APIView):
             booking.booking_status = 'past'
             booking.save()
 
+            email = booking.user.email
+
+            email_result = send_email_template(EmailRaceFinish, email)
+
             return Response(
-                {'message': f"Booking {booking_id} has been updated to 'past'."},
+                {'message': f"Booking {booking_id} has been updated to 'past'.", "email_status": email_result},
                 status=status.HTTP_200_OK
             )
 

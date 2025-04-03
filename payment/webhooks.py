@@ -13,6 +13,8 @@ from rest_framework import status
 
 from bookings.models import Booking
 from users.models import User
+from emails_booking.models import EmailRaceHiring 
+from emails_booking.emails import send_email_template 
 
 
 @csrf_exempt
@@ -81,4 +83,10 @@ def stripe_webhook(request):
             booking_status='upcoming',
         )
 
-    return JsonResponse({'status': 'success'}, status=status.HTTP_200_OK)
+        email = user.email
+
+        send_email_template(EmailRaceHiring, email)
+
+        return JsonResponse({'status': 'success'}, status=status.HTTP_200_OK)
+
+    return JsonResponse({'status': 'error'}, status=status.HTTP_400_BAD_REQUEST)

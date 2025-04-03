@@ -80,6 +80,7 @@ INSTALLED_APPS += [
     'payment',
     'bookings',
     'forgot_password',
+    'emails_booking',
 ]
 
 INSTALLED_APPS += [
