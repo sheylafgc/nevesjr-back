@@ -92,6 +92,7 @@ INSTALLED_APPS += [
     'our_fleet_page',
     'about_page',
     'home_page',
+    'privacy_policy_page',
 ]
 
 MIDDLEWARE = [
