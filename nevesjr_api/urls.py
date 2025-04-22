@@ -64,7 +64,7 @@ urlpatterns = [
     path('api/content/', include('privacy_policy_page.urls', namespace='privacy-policy-page')),
     path('summernote/', include('django_summernote.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('stripe/webhook/', stripe_webhook, name='stripe-webhook'),
+    # path('stripe/webhook/', stripe_webhook, name='stripe-webhook'),
 ]
 
 if settings.DEBUG:

@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Booking
 from .serializers import BookingSerializer
 from emails_booking.emails import send_email_template
-from emails_booking.models import EmailRaceFinish
+from emails_booking.models import EmailRaceFinish, EmailRaceHiring
 
 import stripe
 
@@ -66,75 +66,90 @@ class BookingCreateAPIView(APIView):
             201: '',
         }, 
     )
+    # def post(self, request):
+    #     serializer = BookingSerializer(data=request.data, context={'request': request})
+
+    #     if not serializer.is_valid():
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    #     validated_data = serializer.validated_data
+    #     amount = 0
+
+    #     try:
+    #         user = request.user
+    #         email = user.email
+
+    #         if not email:
+    #             return Response({'error': 'User does not have a registered e-mail address.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #         vehicle = validated_data.get('vehicle')
+    #         distance_km = validated_data.get('distance_km')
+    #         duration = validated_data.get('duration')
+    #         to_route = validated_data.get('to_route')
+
+    #         if to_route and duration:
+    #             return Response(
+    #                 {'error': 'If ‘to_route’ is present, ‘duration’ cannot be supplied.'},
+    #                 status=status.HTTP_400_BAD_REQUEST
+    #             )
+    #         if not to_route and distance_km:
+    #             return Response(
+    #                 {'error': 'If ‘to_route’ is not present, ‘distance_km’ cannot be supplied.'},
+    #                 status=status.HTTP_400_BAD_REQUEST
+    #             )
+
+    #         if vehicle:
+    #             if to_route and vehicle.price_km and distance_km:
+    #                 amount = (vehicle.price_km * Decimal(str(distance_km)) * 100).quantize(Decimal('1'), rounding=ROUND_DOWN)
+    #             elif not to_route and vehicle.price_hour and duration:
+    #                 duration_hours = Decimal(duration.total_seconds()) / Decimal(3600)
+    #                 amount = (vehicle.price_hour * duration_hours * 100).quantize(Decimal('1'), rounding=ROUND_DOWN)
+
+    #         existing_customers = stripe.Customer.list(email=email).data
+    #         if existing_customers:
+    #             customer = existing_customers[0]
+    #         else:
+    #             customer = stripe.Customer.create(
+    #                 email=email,
+    #                 name=f'{user.first_name} {user.last_name}',
+    #             )
+
+    #         payment_intent = stripe.PaymentIntent.create(
+    #             amount=int(amount),
+    #             currency='gbp',
+    #             customer=customer.id,
+    #             payment_method_types=['card'],
+    #             automatic_payment_methods={'enabled': False},
+    #             metadata={
+    #                 **validated_data,
+    #                 'amount': str(amount),
+    #                 'vehicle': str(vehicle.id) if vehicle else None,
+    #                 'user_id': str(user.id)
+    #             }
+    #         )
+
+    #         return Response({
+    #             'client_secret': payment_intent['client_secret'],
+    #             'payment_intent_id': payment_intent.id
+    #         }, status=status.HTTP_201_CREATED)
+
+    #     except Exception as e:
+    #         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request):
-        serializer = BookingSerializer(data=request.data, context={'request': request})
+        data = request.data.copy()
+        data['booking_status'] = 'upcoming'
 
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BookingSerializer(data=data)
+        if serializer.is_valid():
+            booking = serializer.save()
+            
+            if booking.email:
+                send_email_template(EmailRaceHiring, booking.email)
 
-        validated_data = serializer.validated_data
-        amount = 0
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        try:
-            user = request.user
-            email = user.email
-
-            if not email:
-                return Response({'error': 'User does not have a registered e-mail address.'}, status=status.HTTP_400_BAD_REQUEST)
-
-            vehicle = validated_data.get('vehicle')
-            distance_km = validated_data.get('distance_km')
-            duration = validated_data.get('duration')
-            to_route = validated_data.get('to_route')
-
-            if to_route and duration:
-                return Response(
-                    {'error': 'If ‘to_route’ is present, ‘duration’ cannot be supplied.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            if not to_route and distance_km:
-                return Response(
-                    {'error': 'If ‘to_route’ is not present, ‘distance_km’ cannot be supplied.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            if vehicle:
-                if to_route and vehicle.price_km and distance_km:
-                    amount = (vehicle.price_km * Decimal(str(distance_km)) * 100).quantize(Decimal('1'), rounding=ROUND_DOWN)
-                elif not to_route and vehicle.price_hour and duration:
-                    duration_hours = Decimal(duration.total_seconds()) / Decimal(3600)
-                    amount = (vehicle.price_hour * duration_hours * 100).quantize(Decimal('1'), rounding=ROUND_DOWN)
-
-            existing_customers = stripe.Customer.list(email=email).data
-            if existing_customers:
-                customer = existing_customers[0]
-            else:
-                customer = stripe.Customer.create(
-                    email=email,
-                    name=f'{user.first_name} {user.last_name}',
-                )
-
-            payment_intent = stripe.PaymentIntent.create(
-                amount=int(amount),
-                currency='gbp',
-                customer=customer.id,
-                payment_method_types=['card'],
-                automatic_payment_methods={'enabled': False},
-                metadata={
-                    **validated_data,
-                    'amount': str(amount),
-                    'vehicle': str(vehicle.id) if vehicle else None,
-                    'user_id': str(user.id)
-                }
-            )
-
-            return Response({
-                'client_secret': payment_intent['client_secret'],
-                'payment_intent_id': payment_intent.id
-            }, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookingDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
