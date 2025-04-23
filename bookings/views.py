@@ -193,12 +193,43 @@ class BookingCancelAPIView(APIView):
     @swagger_auto_schema(
         operation_description='Cancela uma reserva'
     )
+    # def post(self, request, booking_id):
+    #     booking = get_object_or_404(Booking, id=booking_id)
+
+    #     if booking.payment_status != 'approved':
+    #         return Response({'error': 'Booking cannot be cancelled because payment has not been approved.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    #     if booking.booking_status != 'upcoming':
+    #         return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    #     current_time = timezone.now().time()
+    #     booking_hour = booking.hour 
+
+    #     current_datetime = timezone.now().replace(hour=current_time.hour, minute=current_time.minute, second=current_time.second, microsecond=0)
+    #     booking_datetime = timezone.now().replace(hour=booking_hour.hour, minute=booking_hour.minute, second=booking_hour.second, microsecond=0)
+
+    #     if current_datetime - booking_datetime > timedelta(hours=2):
+    #         return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     try:
+    #         refund = stripe.Refund.create(
+    #             payment_intent=booking.payment_intent_id,
+    #         )
+
+    #         booking.payment_status = 'canceled'
+    #         booking.booking_status = 'canceled'
+    #         booking.save()
+
+    #         return Response({'status': 'Booking cancelled and refund successful.'}, status=status.HTTP_200_OK)
+
+    #     except stripe.error.StripeError as e:
+    #         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    #     except Exception as e:
+    #         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id)
 
-        # if booking.payment_status != 'approved':
-        #     return Response({'error': 'Booking cannot be cancelled because payment has not been approved.'}, status=status.HTTP_400_BAD_REQUEST)
-        
         if booking.booking_status != 'upcoming':
             return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -210,24 +241,11 @@ class BookingCancelAPIView(APIView):
 
         if current_datetime - booking_datetime > timedelta(hours=2):
             return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         booking.booking_status = 'canceled'
-        
-        # try:
-        #     refund = stripe.Refund.create(
-        #         payment_intent=booking.payment_intent_id,
-        #     )
+        booking.save()
 
-        #     booking.booking_status = 'canceled'
-        #     # booking.payment_status = 'canceled'
-        #     booking.save()
-
-        #     return Response({'status': 'Booking cancelled and refund successful.'}, status=status.HTTP_200_OK)
-
-        # except stripe.error.StripeError as e:
-        #     return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        # except Exception as e:
-        #     return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'status': 'Booking cancelled successfully.'}, status=status.HTTP_200_OK)
         
 class BookingByUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
