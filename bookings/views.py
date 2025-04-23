@@ -196,8 +196,8 @@ class BookingCancelAPIView(APIView):
     def post(self, request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id)
 
-        if booking.payment_status != 'approved':
-            return Response({'error': 'Booking cannot be cancelled because payment has not been approved.'}, status=status.HTTP_400_BAD_REQUEST)
+        # if booking.payment_status != 'approved':
+        #     return Response({'error': 'Booking cannot be cancelled because payment has not been approved.'}, status=status.HTTP_400_BAD_REQUEST)
         
         if booking.booking_status != 'upcoming':
             return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -216,7 +216,7 @@ class BookingCancelAPIView(APIView):
                 payment_intent=booking.payment_intent_id,
             )
 
-            booking.payment_status = 'canceled'
+            # booking.payment_status = 'canceled'
             booking.booking_status = 'canceled'
             booking.save()
 
