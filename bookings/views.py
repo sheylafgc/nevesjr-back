@@ -210,22 +210,24 @@ class BookingCancelAPIView(APIView):
 
         if current_datetime - booking_datetime > timedelta(hours=2):
             return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        booking.booking_status = 'canceled'
+        
+        # try:
+        #     refund = stripe.Refund.create(
+        #         payment_intent=booking.payment_intent_id,
+        #     )
 
-        try:
-            refund = stripe.Refund.create(
-                payment_intent=booking.payment_intent_id,
-            )
+        #     booking.booking_status = 'canceled'
+        #     # booking.payment_status = 'canceled'
+        #     booking.save()
 
-            # booking.payment_status = 'canceled'
-            booking.booking_status = 'canceled'
-            booking.save()
+        #     return Response({'status': 'Booking cancelled and refund successful.'}, status=status.HTTP_200_OK)
 
-            return Response({'status': 'Booking cancelled and refund successful.'}, status=status.HTTP_200_OK)
-
-        except stripe.error.StripeError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # except stripe.error.StripeError as e:
+        #     return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # except Exception as e:
+        #     return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 class BookingByUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
