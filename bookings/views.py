@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -232,14 +232,19 @@ class BookingCancelAPIView(APIView):
 
         if booking.booking_status != 'upcoming':
             return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        current_time = timezone.now().time()
-        booking_hour = booking.hour 
 
-        current_datetime = timezone.now().replace(hour=current_time.hour, minute=current_time.minute, second=current_time.second, microsecond=0)
-        booking_datetime = timezone.now().replace(hour=booking_hour.hour, minute=booking_hour.minute, second=booking_hour.second, microsecond=0)
+        if not booking.date or not booking.hour:
+            return Response({'error': 'Booking date or hour is not set.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if current_datetime - booking_datetime > timedelta(hours=2):
+        booking_datetime = datetime.combine(booking.date.date(), booking.hour)
+        booking_datetime = timezone.make_aware(booking_datetime, timezone.get_current_timezone())
+
+        current_datetime = timezone.localtime()
+
+        print(current_datetime)
+        print(booking_datetime)
+
+        if current_datetime > booking_datetime + timedelta(hours=2):
             return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
 
         booking.booking_status = 'canceled'
