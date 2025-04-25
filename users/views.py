@@ -23,8 +23,6 @@ class UserListAPIView(APIView):
         return Response(serializer.data)
     
 class UserCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
     @swagger_auto_schema(
         request_body=UserSerializer,
         operation_description='Cria um usuário',
