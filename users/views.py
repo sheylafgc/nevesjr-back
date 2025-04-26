@@ -105,9 +105,9 @@ class GetUserIdByEmailView(APIView):
         return Response({'id': user.id}, status=status.HTTP_200_OK)
     
 class ActivateUserAPIView(APIView):
-    def get(self, request, pk):
+    def get(self, request, email):
         try:
-            user = User.objects.get(email=pk)
+            user = User.objects.get(email=email)
             if user.is_active:
                 return Response({'detail': 'User is already active.'}, status=status.HTTP_404_NOT_FOUND)
             
