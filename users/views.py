@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .serializers import UserSerializer
 from .models import User
+from emails.send_email_activate_user import send_email_activate_user
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -33,7 +34,13 @@ class UserCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+
+            send_email_activate_user(
+                email=user.email,
+                first_name=user.first_name,
+            )
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -96,3 +103,17 @@ class GetUserIdByEmailView(APIView):
     def get(self, request, email):
         user = get_object_or_404(User, email=email)
         return Response({'id': user.id}, status=status.HTTP_200_OK)
+    
+class ActivateUserAPIView(APIView):
+    def get(self, request, pk):
+        try:
+            user = User.objects.get(email=pk)
+            if user.is_active:
+                return Response({'detail': 'User is already active.'}, status=status.HTTP_404_NOT_FOUND)
+            
+            user.is_active = True
+            user.save()
+            return Response({'detail': 'User successfully activated.'}, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)

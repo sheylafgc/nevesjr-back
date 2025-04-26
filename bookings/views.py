@@ -14,6 +14,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Booking
 from .serializers import BookingSerializer
+from emails.send_email_admin_race import send_email_admin_pending_race
+from emails.send_email_client_race import send_email_admin_approved_race
+
 from emails_booking.emails import send_email_template
 from emails_booking.models import EmailRaceFinish, EmailRaceHiring
 
@@ -138,14 +141,21 @@ class BookingCreateAPIView(APIView):
 
     def post(self, request):
         data = request.data.copy()
-        data['booking_status'] = 'upcoming'
+        data['booking_status'] = 'pending'
 
         serializer = BookingSerializer(data=data)
         if serializer.is_valid():
             booking = serializer.save()
             
             if booking.email:
-                send_email_template(EmailRaceHiring, booking.email)
+                send_email_admin_pending_race(
+                    client_name=booking.first_name,
+                    date_booking=booking.date,
+                    hour_booking=booking.hour,
+                    from_route=booking.from_route,
+                    to_route=booking.to_route,
+                    vehicle_class=booking.vehicle.car_type,
+                )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -340,8 +350,64 @@ class BookingPastAdminListAPIView(APIView):
 
         serializer = BookingSerializer(past_bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class BookingPendingAdminListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description='Lista todas as reservas pendentes'
+    )
+    def get(self, request):
+        past_bookings = Booking.objects.filter(
+            booking_status='pending'
+        ).exclude(payment_status='canceled')
 
-class BookingUpdateStatusAdminAPIView(APIView):
+        serializer = BookingSerializer(past_bookings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class BookingApprovedRaceAdminAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description='Atualiza o status de uma reserva específica de pending para upcoming'
+    )
+    def post(self, request, booking_id):
+        try:
+            booking = Booking.objects.get(id=booking_id, booking_status='pending')
+            booking.booking_status = 'upcoming'
+            booking.save()
+
+            payment_instructions = f"""
+            Amount: ${booking.amount:.2f}<br>
+            Status: {booking.payment_status or 'Not specified'}<br>
+            Payment method: {booking.payment_brand or 'Not specified'}<br>
+            Paid on: {booking.payment_date.strftime('%B %d, %Y at %I:%M %p')}
+            """
+
+            send_email_admin_approved_race(
+                email=booking.user.email,
+                client_name=booking.first_name,
+                date_booking=booking.date,
+                hour_booking=booking.hour,
+                from_route=booking.from_route,
+                to_route=booking.to_route,
+                vehicle_class=booking.vehicle.car_type,
+                payment_instructions=payment_instructions
+
+            )
+
+            return Response(
+                {'message': f"Booking {booking_id} has been updated to 'upcoming'."},
+                status=status.HTTP_200_OK
+            )
+
+        except Booking.DoesNotExist:
+            return Response(
+                {'error': "Reservation not found or not in 'pending' status."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+class BookingFinishRaceAdminAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -355,10 +421,10 @@ class BookingUpdateStatusAdminAPIView(APIView):
 
             email = booking.user.email
 
-            email_result = send_email_template(EmailRaceFinish, email)
+            send_email_template(EmailRaceFinish, email)
 
             return Response(
-                {'message': f"Booking {booking_id} has been updated to 'past'.", "email_status": email_result},
+                {'message': f"Booking {booking_id} has been updated to 'past'."},
                 status=status.HTTP_200_OK
             )
 

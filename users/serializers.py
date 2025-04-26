@@ -28,6 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
             phone=validated_data.get('phone', ''),
             title=validated_data.get('title', '')
         )
+        user.is_active = False
         if password:
             user.set_password(password)
         user.save()

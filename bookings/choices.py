@@ -7,3 +7,10 @@ TITLE_CHOICES = [
     ('Mr', 'Mr'),
     ('Ms', 'Ms'),
 ]
+
+BOOKING_STATUS_CHOICES = [
+    ('pending', 'Pending'),
+    ('upcoming', 'Upcoming'),
+    ('past', 'Past'),
+    ('Canceled', 'Pendente'),
+]
