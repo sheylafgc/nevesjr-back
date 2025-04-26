@@ -11,7 +11,7 @@ from django.conf import settings
 from datetime import datetime
 
 def send_email_activate_user(email, first_name):
-    activation_link = f'http://localhost:3000/activate-account?email={email}'
+    activation_link = f'https://nevesjr.vercel.app/en/activate-account?email={email}'
 
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,

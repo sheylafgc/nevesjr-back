@@ -377,11 +377,16 @@ class BookingApprovedRaceAdminAPIView(APIView):
             booking.booking_status = 'upcoming'
             booking.save()
 
+            amount = f"${booking.amount:.2f}" if booking.amount is not None else "Not specified"
+            status_payment = booking.payment_status or "Not specified"
+            payment_method = booking.payment_brand or "Not specified"
+            payment_date = booking.payment_date.strftime('%B %d, %Y at %I:%M %p') if booking.payment_date else "Not specified"
+
             payment_instructions = f"""
-            Amount: ${booking.amount:.2f}<br>
-            Status: {booking.payment_status or 'Not specified'}<br>
-            Payment method: {booking.payment_brand or 'Not specified'}<br>
-            Paid on: {booking.payment_date.strftime('%B %d, %Y at %I:%M %p')}
+            Amount: {amount}<br>
+            Status: {status_payment}<br>
+            Payment method: {payment_method}<br>
+            Paid on: {payment_date}
             """
 
             send_email_admin_approved_race(
@@ -397,7 +402,7 @@ class BookingApprovedRaceAdminAPIView(APIView):
             )
 
             return Response(
-                {'message': f"Booking {booking_id} has been updated to 'upcoming'."},
+                {'message': f"Booking has been updated to 'upcoming'."},
                 status=status.HTTP_200_OK
             )
 
@@ -424,7 +429,7 @@ class BookingFinishRaceAdminAPIView(APIView):
             send_email_template(EmailRaceFinish, email)
 
             return Response(
-                {'message': f"Booking {booking_id} has been updated to 'past'."},
+                {'message': f"Booking has been updated to 'past'."},
                 status=status.HTTP_200_OK
             )
 
