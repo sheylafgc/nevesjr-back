@@ -12,6 +12,16 @@ from emails.send_email_activate_user import send_email_activate_user
 from drf_yasg.utils import swagger_auto_schema
 
 
+def format_serializer_errors(errors):
+    if isinstance(errors, dict):
+        for field, messages in errors.items():
+            if isinstance(messages, list) and messages:
+                return messages[0]
+            elif isinstance(messages, str):
+                return messages
+    return "Erro de validação."
+
+
 class UserListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -50,8 +60,10 @@ class UserCreateAPIView(APIView):
                 first_name=user.first_name,
             )
 
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response({"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        error_message = format_serializer_errors(serializer.errors)
+        return Response({"detail": error_message}, status=status.HTTP_400_BAD_REQUEST)
     
 class UserDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
