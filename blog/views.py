@@ -50,7 +50,7 @@ class BlogDetailAPIView(APIView):
         operation_description='Retorna um post blog passando o idioma como parâmetro'
     )
     def get(self, request, pk):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -115,7 +115,7 @@ class BlogCategoryListAPIView(APIView):
         operation_description='Lista todas as categorias do blog passando o idioma como parâmetro',
     )
     def get(self, request):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -140,7 +140,7 @@ class BlogByCategoryAPIView(APIView):
         operation_description='Lista os post blogs por categoria passando o idioma como parâmetro',
     )
     def get(self, request, category):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)

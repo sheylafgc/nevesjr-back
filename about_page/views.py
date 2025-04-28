@@ -15,7 +15,7 @@ class AboutPageAPIView(APIView):
         operation_description='Retorna o contéudo da tela About passando o idioma como parâmetro'
     )
     def get(self, request):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)

@@ -10,8 +10,8 @@ from django.conf import settings
 
 
 @csrf_exempt
-def send_email_reset_password(email, user_name, code):
-    reset_link = f'https://nevesjr.vercel.app/auth/ValidateCode?code={code}&email={email}'
+def send_email_reset_password(lang, email, user_name, code):
+    reset_link = f'https://nevesjr.vercel.app/{lang}/auth/ValidateCode?code={code}&email={email}'
 
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,

@@ -17,7 +17,7 @@ class OurServiceListAPIView(APIView):
         operation_description='Retorna todos os serviços passando o idioma como parâmetro'
     )
     def get(self, request):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -66,7 +66,7 @@ class OurServiceDetailAPIView(APIView):
         operation_description='Retorna um serviço passando o idioma como parâmetro'
     )
     def get(self, request, pk):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)

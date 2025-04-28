@@ -32,11 +32,20 @@ class UserCreateAPIView(APIView):
         }
     )
     def post(self, request, *args, **kwargs):
+        lang = request.query_params.get('lang')
+
+        if not lang:
+            return Response(
+                {"detail": "O parâmetro 'lang' é obrigatório."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
 
             send_email_activate_user(
+                lang=lang,
                 email=user.email,
                 first_name=user.first_name,
             )

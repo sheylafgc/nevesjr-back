@@ -17,7 +17,7 @@ class VehicleListAPIView(APIView):
         operation_description='Retorna todos os veículos da frota passando o idioma como parâmetro'
     )
     def get(self, request):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -78,7 +78,7 @@ class VehicleDetailAPIView(APIView):
         operation_description='Retorna um veículo passando o idioma como parâmetro'
     )
     def get(self, request, pk):
-        lang = request.GET.get('lang')
+        lang = request.query_params.get('lang')
 
         if not lang:
             return Response({'error': 'The ‘lang’ parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)

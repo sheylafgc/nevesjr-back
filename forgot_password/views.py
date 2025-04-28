@@ -25,7 +25,14 @@ class ForgotPasswordAPIView(APIView):
     operation_description='Gera o email de recuperação de senha'
     )
     def post(self, request, format=None):
-        email = request.query_params.get('email', None)
+        email = request.query_params.get('email')
+        lang = request.query_params.get('lang')
+
+        if not lang:
+            return Response(
+                {"detail": "O parâmetro 'lang' é obrigatório."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             user = User.objects.get(email=email)
@@ -45,7 +52,12 @@ class ForgotPasswordAPIView(APIView):
 
         user_name = user.get_full_name() if user.get_full_name() else user.first_name or 'User'
 
-        send_email_reset_password(email, user_name, code)
+        send_email_reset_password(
+            lang=lang,
+            email=email, 
+            user_name=user_name, 
+            code=code,
+        )
 
         return Response({'message': 'Request generated successfully.'}, status=status.HTTP_201_CREATED)
     
