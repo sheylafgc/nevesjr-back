@@ -51,7 +51,7 @@ class UserCreateAPIView(APIView):
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
 class UserDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
