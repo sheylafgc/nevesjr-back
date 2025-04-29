@@ -17,11 +17,10 @@ def format_date_time(date, hour):
         return combined.strftime('%B %d, %Y at %I:%M %p')
     return 'Date and time not provided'
 
-def send_email_admin_pending_race(client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
+def send_email_admin_pending_race(client_name, date_booking, hour_booking, from_route, to_route, vehicle_class, notes):
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
         to_emails='sheylainfo@gmail.com',
-        # to_emails='pepevinagre@hotmail.com',
         subject='New Travel Request Received',
         html_content=f"""
         <p>Hello, NevesJR team!</p>
@@ -34,6 +33,7 @@ def send_email_admin_pending_race(client_name, date_booking, hour_booking, from_
         📍 Origin: {from_route}<br>
         📍 Destination: {to_route}<br>
         🚗 Vehicle category: {vehicle_class}<br>
+        📝 Notes: {notes}<br>
 
         <p>The booking will only be effective after manual confirmation and sending of payment instructions to the customer. </p>
 

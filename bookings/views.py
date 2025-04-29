@@ -155,6 +155,7 @@ class BookingCreateAPIView(APIView):
                     from_route=booking.from_route,
                     to_route=booking.to_route,
                     vehicle_class=booking.vehicle.car_type,
+                    notes=booking.notes,
                 )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -397,8 +398,8 @@ class BookingApprovedRaceAdminAPIView(APIView):
                 from_route=booking.from_route,
                 to_route=booking.to_route,
                 vehicle_class=booking.vehicle.car_type,
+                notes=booking.notes,
                 payment_instructions=payment_instructions
-
             )
 
             return Response(

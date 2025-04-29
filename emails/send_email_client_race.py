@@ -17,7 +17,7 @@ def format_date_time(date, hour):
         return combined.strftime('%B %d, %Y at %I:%M %p')
     return 'Date and time not provided'
 
-def send_email_admin_approved_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class, payment_instructions):
+def send_email_admin_approved_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class, notes, payment_instructions):
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
         to_emails=email,
@@ -31,7 +31,8 @@ def send_email_admin_approved_race(email, client_name, date_booking, hour_bookin
         📍 Origin: {from_route}<br>
         📍 Destination: {to_route}<br>
         📅 Date and time: {format_date_time(date_booking, hour_booking)}<br>
-        🚗 Vehicle booked: {vehicle_class}</p>
+        🚗 Vehicle booked: {vehicle_class}<br>
+        📝 Notes: {notes}</p>
 
         <p>To ensure you receive excellent service, we ask that you complete the payment according to the instructions below:</p>
         <p>💳 {payment_instructions}</p>
