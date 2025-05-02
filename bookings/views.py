@@ -16,6 +16,7 @@ from .models import Booking
 from .serializers import BookingSerializer
 from emails.send_email_admin_race import send_email_admin_pending_race
 from emails.send_email_client_race import send_email_admin_approved_race
+from emails.send_email_cancel_race import send_email_admin_cancel_race, send_email_user_cancel_race
 
 from emails_booking.emails import send_email_template
 from emails_booking.models import EmailRaceFinish, EmailRaceHiring
@@ -252,14 +253,30 @@ class BookingCancelAPIView(APIView):
 
         current_datetime = timezone.localtime()
 
-        print(current_datetime)
-        print(booking_datetime)
-
         if current_datetime > booking_datetime + timedelta(hours=2):
             return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
 
         booking.booking_status = 'canceled'
         booking.save()
+
+        send_email_admin_cancel_race(
+            client_name=booking.first_name,
+            date_booking=booking.date,
+            hour_booking=booking.hour,
+            from_route=booking.from_route,
+            to_route=booking.to_route,
+            vehicle_class=booking.vehicle.car_type,
+        )
+
+        send_email_user_cancel_race(
+            email=booking.email,
+            client_name=booking.first_name,
+            date_booking=booking.date,
+            hour_booking=booking.hour,
+            from_route=booking.from_route,
+            to_route=booking.to_route,
+            vehicle_class=booking.vehicle.car_type,
+        )
 
         return Response({'status': 'Booking cancelled successfully.'}, status=status.HTTP_200_OK)
         

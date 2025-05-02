@@ -12,5 +12,5 @@ BOOKING_STATUS_CHOICES = [
     ('pending', 'Pending'),
     ('upcoming', 'Upcoming'),
     ('past', 'Past'),
-    ('Canceled', 'Pendente'),
+    ('canceled', 'Canceled'),
 ]
