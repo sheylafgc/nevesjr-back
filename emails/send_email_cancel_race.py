@@ -17,15 +17,15 @@ def format_date_time(date, hour):
         return combined.strftime('%B %d, %Y at %I:%M %p')
     return 'Date and time not provided'
 
-def send_email_admin_cancel_race(client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
+def send_email_admin_cancel_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails='sheylainfo@gmail.com',
-        subject=f'Trip Canceled by Customer – {client_name}',
+        to_emails=['sheylainfo@gmail.com', email],
+        subject='Trip Canceled by Team NevesJR',
         html_content=f"""
-        <p>Hello, NevesJR team!</p>
+        <p>Hello, {client_name}!</p>
 
-        <p>We inform you that customer {client_name} has canceled the trip that was scheduled. </p>
+        <p>We inform you that Team NevesJR has canceled the trip that was scheduled. </p>
 
         <p><strong>Check the details of the canceled reservation:</strong><br>
         📅 Date and time: {format_date_time(date_booking, hour_booking)}<br>
@@ -58,12 +58,12 @@ def send_email_admin_cancel_race(client_name, date_booking, hour_booking, from_r
 def send_email_user_cancel_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails=email,
-        subject='Trip Canceled by Team NevesJR',
+         to_emails=['sheylainfo@gmail.com', email],
+        subject=f'Trip Canceled by Customer – {client_name}',
         html_content=f"""
-        <p>Hello, {client_name}!</p>
+        <p>Hello!</p>
 
-        <p>We inform you that Team NevesJR has canceled the trip that was scheduled.</p>
+        <p>We inform you that customer {client_name} has canceled the trip that was scheduled.</p>
 
         <p><strong>Check the details of the canceled reservation:</strong><br>
         📅 Date and time: {format_date_time(date_booking, hour_booking)}<br>

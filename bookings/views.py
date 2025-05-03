@@ -199,7 +199,7 @@ class BookingDeleteAPIView(APIView):
         booking.delete()
         return Response({'message': 'Booking successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
     
-class BookingCancelAPIView(APIView):
+class BookingCancelUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -242,8 +242,46 @@ class BookingCancelAPIView(APIView):
     def post(self, request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id)
 
-        if booking.booking_status != 'upcoming':
-            return Response({'error': 'Booking can only be cancelled if it is in "upcoming" status.'}, status=status.HTTP_400_BAD_REQUEST)
+        if booking.booking_status not in ['upcoming', 'pending']:
+            return Response({'error': 'Booking can only be cancelled if it is in "upcoming" or "pending" status.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not booking.date or not booking.hour:
+            return Response({'error': 'Booking date or hour is not set.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        booking_datetime = datetime.combine(booking.date.date(), booking.hour)
+        booking_datetime = timezone.make_aware(booking_datetime, timezone.get_current_timezone())
+
+        current_datetime = timezone.localtime()
+
+        if current_datetime > booking_datetime + timedelta(hours=2):
+            return Response({'error': 'Booking cannot be cancelled because it is 2 hours or more past the scheduled time.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        booking.booking_status = 'canceled'
+        booking.save()
+
+        send_email_user_cancel_race(
+            email=booking.email,
+            client_name=booking.first_name,
+            date_booking=booking.date,
+            hour_booking=booking.hour,
+            from_route=booking.from_route,
+            to_route=booking.to_route,
+            vehicle_class=booking.vehicle.car_type,
+        )
+
+        return Response({'status': 'Booking cancelled successfully.'}, status=status.HTTP_200_OK)
+    
+class BookingCancelAdminAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description='Cancela uma reserva'
+    )
+    def post(self, request, booking_id):
+        booking = get_object_or_404(Booking, id=booking_id)
+
+        if booking.booking_status not in ['upcoming', 'pending']:
+            return Response({'error': 'Booking can only be cancelled if it is in "upcoming" or "pending" status.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not booking.date or not booking.hour:
             return Response({'error': 'Booking date or hour is not set.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -260,15 +298,6 @@ class BookingCancelAPIView(APIView):
         booking.save()
 
         send_email_admin_cancel_race(
-            client_name=booking.first_name,
-            date_booking=booking.date,
-            hour_booking=booking.hour,
-            from_route=booking.from_route,
-            to_route=booking.to_route,
-            vehicle_class=booking.vehicle.car_type,
-        )
-
-        send_email_user_cancel_race(
             email=booking.email,
             client_name=booking.first_name,
             date_booking=booking.date,
