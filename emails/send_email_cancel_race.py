@@ -20,7 +20,7 @@ def format_date_time(date, hour):
 def send_email_admin_cancel_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails=['sheylainfo@gmail.com', email],
+        to_emails=['nevesjrexecutive@gmail.com', email],
         subject='Trip Canceled by Team NevesJR',
         html_content=f"""
         <p>Hello, {client_name}!</p>
@@ -58,7 +58,7 @@ def send_email_admin_cancel_race(email, client_name, date_booking, hour_booking,
 def send_email_user_cancel_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
-         to_emails=['sheylainfo@gmail.com', email],
+         to_emails=['nevesjrexecutive@gmail.com', email],
         subject=f'Trip Canceled by Customer – {client_name}',
         html_content=f"""
         <p>Hello!</p>
