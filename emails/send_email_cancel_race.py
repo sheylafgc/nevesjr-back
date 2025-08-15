@@ -1,14 +1,10 @@
 import logging
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from sendgrid.helpers.mail import *
-
-from sendgrid import SendGridAPIClient
-
 from django.conf import settings
-
 from datetime import datetime
+
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 
 def format_date_time(date, hour):
@@ -18,11 +14,11 @@ def format_date_time(date, hour):
     return 'Date and time not provided'
 
 def send_email_admin_cancel_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
-    message = Mail(
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails=['nevesjrexecutive@gmail.com', email],
-        subject='Trip Canceled by Team NevesJR',
-        html_content=f"""
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = settings.BREVO_API_KEY
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+    html_content = f"""
         <p>Hello, {client_name}!</p>
 
         <p>We inform you that Team NevesJR has canceled the trip that was scheduled. </p>
@@ -36,31 +32,35 @@ def send_email_admin_cancel_race(email, client_name, date_booking, hour_booking,
         <p>If there has already been an advance payment or payment, please check the internal procedures for refund or rescheduling, if necessary. </p>
 
         <p>Sincerely,<br>NevesJR System</p>
-        """
+    """
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        sender={"email": settings.DEFAULT_FROM_EMAIL, "name": "Neves Jr."},
+        to=[
+            {"email": "nevesjrexecutive@gmail.com", "name": "NevesJR Team"},
+            {"email": email, "name": client_name}
+        ],
+        subject="Trip Canceled by Team NevesJR",
+        html_content=html_content
     )
 
     try:
-        sg = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        response = sg.send(message)
-
+        api_response = api_instance.send_transac_email(send_smtp_email)
         return JsonResponse({
-            'status': 'success',
-            'message': 'Email sent successfully',
-            'status_code': response.status_code
+            "status": "success",
+            "message": "Email sent successfully",
+            "response": str(api_response)
         })
+    except ApiException as e:
+        logging.error("Erro ao enviar e-mail via Brevo: %s", e)
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': str(e)
-        }, status=500)
-    
 def send_email_user_cancel_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class):
-    message = Mail(
-        from_email=settings.DEFAULT_FROM_EMAIL,
-         to_emails=['nevesjrexecutive@gmail.com', email],
-        subject=f'Trip Canceled by Customer – {client_name}',
-        html_content=f"""
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = settings.BREVO_API_KEY
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+    html_content = f"""
         <p>Hello!</p>
 
         <p>We inform you that customer {client_name} has canceled the trip that was scheduled.</p>
@@ -74,21 +74,25 @@ def send_email_user_cancel_race(email, client_name, date_booking, hour_booking, 
         <p>If there has already been an advance payment or payment, please check the internal procedures for refund or rescheduling, if necessary.</p>
 
         <p>Sincerely,<br>NevesJR System</p>
-        """
+    """
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        sender={"email": settings.DEFAULT_FROM_EMAIL, "name": "Neves Jr."},
+        to=[
+            {"email": "nevesjrexecutive@gmail.com", "name": "NevesJR Team"},
+            {"email": email, "name": client_name}
+        ],
+        subject=f"Trip Canceled by Customer – {client_name}",
+        html_content=html_content
     )
 
     try:
-        sg = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        response = sg.send(message)
-
+        api_response = api_instance.send_transac_email(send_smtp_email)
         return JsonResponse({
-            'status': 'success',
-            'message': 'Email sent successfully',
-            'status_code': response.status_code
+            "status": "success",
+            "message": "Email sent successfully",
+            "response": str(api_response)
         })
-
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': str(e)
-        }, status=500)
+    except ApiException as e:
+        logging.error("Erro ao enviar e-mail via Brevo: %s", e)
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)

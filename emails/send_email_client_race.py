@@ -1,14 +1,10 @@
 import logging
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from sendgrid.helpers.mail import *
-
-from sendgrid import SendGridAPIClient
-
 from django.conf import settings
-
 from datetime import datetime
+
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 
 def format_date_time(date, hour):
@@ -18,11 +14,13 @@ def format_date_time(date, hour):
     return 'Date and time not provided'
 
 def send_email_admin_approved_race(email, client_name, date_booking, hour_booking, from_route, to_route, vehicle_class, notes, payment_instructions):
-    message = Mail(
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails=email,
-        subject='Your Trip Confirmed - NevesJR',
-        html_content=f"""
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = settings.BREVO_API_KEY
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+        sib_api_v3_sdk.ApiClient(configuration)
+    )
+
+    html_content = f"""
         <p>Hello, {client_name}!</p>
 
         <p>We are pleased to inform you that your booking with NevesJR has been successfully confirmed!</p>
@@ -42,21 +40,22 @@ def send_email_admin_approved_race(email, client_name, date_booking, hour_bookin
         <p>Thank you for choosing NevesJR!</p>
 
         <p>Sincerely,<br>NevesJR Team</p>
-        """
+    """
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        sender={"email": settings.DEFAULT_FROM_EMAIL, "name": "Neves Jr."},
+        to=[{"email": email, "name": client_name}],
+        subject="Your Trip Confirmed - NevesJR",
+        html_content=html_content
     )
 
     try:
-        sg = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        response = sg.send(message)
-
+        api_response = api_instance.send_transac_email(send_smtp_email)
         return JsonResponse({
-            'status': 'success',
-            'message': 'Email sent successfully',
-            'status_code': response.status_code
+            "status": "success",
+            "message": "Email sent successfully",
+            "response": str(api_response)
         })
-
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': str(e)
-        }, status=500)
+    except ApiException as e:
+        logging.error("Erro ao enviar e-mail via Brevo: %s", e)
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)

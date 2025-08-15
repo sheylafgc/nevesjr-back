@@ -1,22 +1,25 @@
 import logging
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from sendgrid.helpers.mail import *
-
-from sendgrid import SendGridAPIClient
-
 from django.conf import settings
 
-from datetime import datetime
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
+
 
 def send_email_activate_user(lang, email, first_name):
     activation_link = f'https://nevesjr.vercel.app/{lang}/activate-account?email={email}'
 
-    message = Mail(
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails=email,
-        subject='Activate your Neves Jr. account',
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = settings.BREVO_API_KEY
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+        sib_api_v3_sdk.ApiClient(configuration)
+    )
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        sender={"email": settings.DEFAULT_FROM_EMAIL, "name": "Neves Jr."},
+        to=[{"email": email, "name": first_name}],
+        subject="Activate your Neves Jr. account",
         html_content=f"""
         <p>Hello, {first_name}!</p>
 
@@ -33,16 +36,14 @@ def send_email_activate_user(lang, email, first_name):
     )
 
     try:
-        sg = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        response = sg.send(message)
-
+        api_response = api_instance.send_transac_email(send_smtp_email)
         return JsonResponse({
             'status': 'success',
             'message': 'Email sent successfully',
-            'status_code': response.status_code
+            'data': api_response.to_dict()
         })
-
-    except Exception as e:
+    except ApiException as e:
+        logging.error(f"Erro ao enviar e-mail via Brevo: {e}")
         return JsonResponse({
             'status': 'error',
             'message': str(e)
