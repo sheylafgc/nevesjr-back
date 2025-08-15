@@ -15,7 +15,8 @@ from pathlib import Path
 
 import os
 import pymysql
-import environ
+
+from dotenv import load_dotenv
 
 from django.utils.translation import gettext_lazy as _
 
@@ -24,9 +25,8 @@ pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-env_path = os.path.join(BASE_DIR, ".env")
-environ.Env.read_env(env_path)
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -211,10 +211,10 @@ SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
 }
 
-STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
-STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 
-BREVO_API_KEY = env('BREVO_API_KEY')
+BREVO_API_KEY = os.getenv('BREVO_API_KEY')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp-relay.brevo.com"
