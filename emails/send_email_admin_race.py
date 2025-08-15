@@ -40,7 +40,7 @@ def send_email_admin_pending_race(client_name, date_booking, hour_booking, from_
 
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
         sender={"email": settings.DEFAULT_FROM_EMAIL, "name": "Neves Jr."},
-        to=[{"email": "mario.batista.oliveira3@gmail.com", "name": "NevesJR Team"}],
+        to=[{"email": "nevesjrexecutive@gmail.com", "name": "NevesJR Team"}],
         subject="New Travel Request Received",
         html_content=html_content
     )
